@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import artifact from '@actions/artifact'
 import { Context } from '@actions/github/lib/context'
-import { LcovParser } from './LcovParser'
+import { CloverParser } from './CloverParser'
 import { CoverageReporter } from './CoverageReporter'
 import { GitHubService } from './GitHubService'
 import { CoverageData, ActionInputs, CoverageReport } from './types'
@@ -15,14 +15,14 @@ export class PrTestCoverageAction {
   private readonly inputs: ActionInputs
   private readonly context: Context
   private readonly githubService: GitHubService
-  private readonly lcovParser: LcovParser
+  private readonly cloverParser: CloverParser
   private readonly coverageReporter: CoverageReporter
 
   constructor(inputs: ActionInputs, context: Context) {
     this.inputs = inputs
     this.context = context
     this.githubService = new GitHubService(inputs.githubToken, context)
-    this.lcovParser = new LcovParser()
+    this.cloverParser = new CloverParser()
     this.coverageReporter = new CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage)
   }
 
@@ -43,14 +43,14 @@ export class PrTestCoverageAction {
       core.info(`Changed working directory to: ${this.inputs.workingDirectory}`)
     }
 
-    // Parse LCOV file
-    const lcovPath = path.resolve(this.inputs.lcovFile)
-    if (!fs.existsSync(lcovPath)) {
-      throw new Error(`LCOV file not found: ${lcovPath}`)
+    // Parse Clover file
+    const cloverPath = path.resolve(this.inputs.cloverFile)
+    if (!fs.existsSync(cloverPath)) {
+      throw new Error(`Clover file not found: ${cloverPath}`)
     }
 
-    core.info(`Parsing LCOV file: ${lcovPath}`)
-    const coverageData = await this.lcovParser.parse(lcovPath)
+    core.info(`Parsing Clover file: ${cloverPath}`)
+    const coverageData = await this.cloverParser.parse(cloverPath)
 
     // Get changed files from PR
     core.info('Getting changed files from PR...')
@@ -79,8 +79,8 @@ export class PrTestCoverageAction {
   }
 
   private validateInputs(): void {
-    if (!this.inputs.lcovFile) {
-      throw new Error('lcov-file input is required')
+    if (!this.inputs.cloverFile) {
+      throw new Error('clover-file input is required')
     }
     
     if (!this.inputs.githubToken) {
@@ -120,7 +120,7 @@ export class PrTestCoverageAction {
 
   private async uploadArtifact(): Promise<void> {
     try {
-      const files = [this.inputs.lcovFile]
+      const files = [this.inputs.cloverFile]
       
       // Make artifact name unique to avoid conflicts
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-')

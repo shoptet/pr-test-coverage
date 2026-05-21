@@ -1,12 +1,12 @@
 # PR Test Coverage
 
-A Github Action to report the test coverage of changed files in a pull request. All it needs is an lcov.info file. It provides a summary of the coverage for all files and changed files separately, and a detailed table with coverage metrics per changed file.
+A Github Action to report the test coverage of changed files in a pull request. All it needs is a clover.xml file. It provides a summary of the coverage for all files and changed files separately, and a detailed table with coverage metrics per changed file.
 
 <img width="924" height="761" alt="image" src="https://github.com/user-attachments/assets/d0e61fa6-46c6-40b1-b9ce-b3c71a10321b" />
 
 ## Features
 
-- 📊 Generates comprehensive coverage reports from LCOV files
+- 📊 Generates comprehensive coverage reports from Clover XML files
 - 💬 Posts coverage summaries as PR comments
 - 🔄 Updates existing comments or creates new ones
 - 📈 Shows coverage for all files and changed files separately
@@ -37,13 +37,13 @@ jobs:
       
       - name: Run tests and generate coverage
         run: |
-          # Your test commands here that generate LCOV report
-          npm test -- --coverage
-      
+          # Your test commands here that generate Clover XML report
+          npm test -- --coverage --coverageReporters=clover
+
       - name: PR Test Coverage
         uses: jbaczuk/pr-test-coverage@v1
         with:
-          lcov-file: coverage/lcov.info
+          clover-file: coverage/clover.xml
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -53,9 +53,9 @@ jobs:
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    # Required: Path to LCOV file
-    lcov-file: coverage/lcov.info
-    
+    # Required: Path to Clover XML file
+    clover-file: coverage/clover.xml
+
     # Required: GitHub token for API access
     github-token: ${{ secrets.GITHUB_TOKEN }}
     
@@ -79,7 +79,7 @@ jobs:
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `lcov-file` | Path to the LCOV file (e.g., `coverage/lcov.info`) | ✅ | - |
+| `clover-file` | Path to the Clover XML file (e.g., `coverage/clover.xml`) | ✅ | - |
 | `github-token` | GitHub token for API access and posting comments | ✅ | `${{ github.token }}` |
 | `working-directory` | Working directory to run the action from | ❌ | `''` (repository root) |
 | `all-files-minimum-coverage` | Minimum coverage percentage for all files (0-100) | ❌ | `0` |
@@ -143,19 +143,19 @@ The action uses visual indicators to quickly show coverage status:
 
 The action will fail if:
 
-1. **LCOV file not found** - The specified LCOV file doesn't exist
+1. **Clover file not found** - The specified Clover XML file doesn't exist
 2. **Not a pull request** - The action is not running in a PR context
 3. **Coverage below threshold** - When coverage falls below specified minimums:
    - All files coverage below `all-files-minimum-coverage`
    - Changed files coverage below `changed-files-minimum-coverage`
 
-## Supported LCOV Format
+## Supported Clover Format
 
-The action supports standard LCOV format with the following metrics:
+The action supports standard Clover XML format with the following metrics:
 
-- **Lines**: `LF` (lines found) and `LH` (lines hit)
-- **Functions**: `FNF` (functions found) and `FNH` (functions hit)
-- **Branches**: `BRF` (branches found) and `BRH` (branches hit)
+- **Lines**: `statements` (total lines) and `coveredstatements` (lines hit)
+- **Functions**: `methods` (total methods) and `coveredmethods` (methods hit)
+- **Branches**: `conditionals` (total branches) and `coveredconditionals` (branches hit)
 
 ## Common Integration Examples
 
@@ -166,12 +166,12 @@ The action supports standard LCOV format with the following metrics:
   run: npm ci
 
 - name: Run tests with coverage
-  run: npm test -- --coverage --coverageReporters=lcov
+  run: npm test -- --coverage --coverageReporters=clover
 
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    lcov-file: coverage/lcov.info
+    clover-file: coverage/clover.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -183,27 +183,26 @@ The action supports standard LCOV format with the following metrics:
     pip install pytest pytest-cov
 
 - name: Run tests with coverage
-  run: pytest --cov=. --cov-report=lcov
+  run: pytest --cov=. --cov-report=xml
 
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    lcov-file: coverage.lcov
+    clover-file: coverage.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Go with go-test-coverage
+### PHP with PHPUnit
 
 ```yaml
 - name: Run tests with coverage
   run: |
-    go test -coverprofile=coverage.out ./...
-    go tool cover -func=coverage.out -o=coverage.lcov
+    vendor/bin/phpunit --coverage-clover coverage/clover.xml
 
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    lcov-file: coverage.lcov
+    clover-file: coverage/clover.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 

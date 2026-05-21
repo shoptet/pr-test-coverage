@@ -6,8 +6,8 @@ branding:
   color: 'green'
 
 inputs:
-  lcov-file:
-    description: 'Path to the LCOV file (e.g., coverage/lcov.info)'
+  clover-file:
+    description: 'Path to the Clover XML file (e.g., coverage/clover.xml)'
     required: true
   github-token:
     description: 'GitHub token for accessing API and posting comments'

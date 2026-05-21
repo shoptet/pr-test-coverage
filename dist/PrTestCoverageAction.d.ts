@@ -5,7 +5,7 @@ export declare class PrTestCoverageAction {
     private readonly inputs;
     private readonly context;
     private readonly githubService;
-    private readonly lcovParser;
+    private readonly cloverParser;
     private readonly coverageReporter;
     constructor(inputs: ActionInputs, context: Context);
     execute(): Promise<void>;

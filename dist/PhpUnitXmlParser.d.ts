@@ -3,7 +3,7 @@ export declare class PhpUnitXmlParser {
     parse(coverageXmlDir: string): Promise<CoverageData>;
     /**
      * Extracts the source file path from a PHPUnit XML file
-     * This reads the individual file XML to get the path attribute
+     * This reads the individual file XML to get the path attribute and combines it with the project source prefix
      */
     private extractSourcePath;
 }

@@ -89660,6 +89660,20 @@ class PhpUnitXmlParser {
             if (!project) {
                 return coverageData; // Empty coverage
             }
+            // Extract the project source path to calculate relative paths from repository root
+            const projectSource = project.$.source || '';
+            const repositoryRoot = process.cwd();
+            // Calculate the prefix to add to file paths to make them relative to repository root
+            let pathPrefix = '';
+            if (projectSource) {
+                // Convert absolute project source to relative path from repository root
+                if (path.isAbsolute(projectSource)) {
+                    pathPrefix = path.relative(repositoryRoot, projectSource);
+                }
+                else {
+                    pathPrefix = projectSource;
+                }
+            }
             // Helper function to process file elements recursively
             const processDirectory = (dir) => {
                 // Process files in this directory
@@ -89711,7 +89725,7 @@ class PhpUnitXmlParser {
                 // The href is relative to the coverage-xml directory (e.g., "Covered/Calculator.php.xml")
                 // We need to extract the actual source file path
                 const fileXmlPath = path.join(coverageXmlDir, href);
-                const filePath = this.extractSourcePath(fileXmlPath, fileName);
+                const filePath = this.extractSourcePath(fileXmlPath, fileName, pathPrefix);
                 const fileCoverage = {
                     file: filePath,
                     lines: {
@@ -89742,13 +89756,13 @@ class PhpUnitXmlParser {
     }
     /**
      * Extracts the source file path from a PHPUnit XML file
-     * This reads the individual file XML to get the path attribute
+     * This reads the individual file XML to get the path attribute and combines it with the project source prefix
      */
-    extractSourcePath(fileXmlPath, fileName) {
+    extractSourcePath(fileXmlPath, fileName, pathPrefix) {
         try {
             if (!fs.existsSync(fileXmlPath)) {
-                // Fallback to just the filename if XML doesn't exist
-                return fileName;
+                // Fallback to just the filename with prefix if XML doesn't exist
+                return pathPrefix ? path.join(pathPrefix, fileName) : fileName;
             }
             const xmlContent = fs.readFileSync(fileXmlPath, 'utf-8');
             const match = xmlContent.match(/path="([^"]*)"/);
@@ -89756,13 +89770,16 @@ class PhpUnitXmlParser {
                 const dirPath = match[1];
                 // Remove leading slash and combine with filename
                 const cleanPath = dirPath.replace(/^\//, '');
-                return cleanPath ? `${cleanPath}/${fileName}` : fileName;
+                const relativePath = cleanPath ? `${cleanPath}/${fileName}` : fileName;
+                // Combine with pathPrefix to get path relative to repository root
+                return pathPrefix ? path.join(pathPrefix, relativePath) : relativePath;
             }
-            return fileName;
+            // No path attribute found, combine prefix with filename
+            return pathPrefix ? path.join(pathPrefix, fileName) : fileName;
         }
         catch (error) {
-            // On error, return just the filename
-            return fileName;
+            // On error, return filename with prefix
+            return pathPrefix ? path.join(pathPrefix, fileName) : fileName;
         }
     }
 }

@@ -87,6 +87,37 @@ jobs:
 | `artifact-name` | Name for coverage artifact upload (empty to skip) | ❌ | `''` |
 | `update-comment` | Whether to update existing comment or create new one | ❌ | `true` |
 
+## Outputs
+
+The action provides the following outputs that can be used in subsequent workflow steps:
+
+| Output | Description |
+|--------|-------------|
+| `all-files-coverage` | Overall line coverage percentage for all files |
+| `changed-files-coverage` | Line coverage percentage for changed files |
+| `all-files-lines-hit` | Number of lines covered in all files |
+| `all-files-lines-total` | Total number of lines in all files |
+| `changed-files-lines-hit` | Number of lines covered in changed files |
+| `changed-files-lines-total` | Total number of lines in changed files |
+
+### Using Outputs
+
+```yaml
+- name: PR Test Coverage
+  id: coverage
+  uses: jbaczuk/pr-test-coverage@v1
+  with:
+    clover-file: coverage/clover.xml
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+
+- name: Check coverage threshold
+  run: |
+    echo "Coverage: ${{ steps.coverage.outputs.all-files-coverage }}%"
+    if (( $(echo "${{ steps.coverage.outputs.all-files-coverage }} < 80" | bc -l) )); then
+      echo "Warning: Coverage is below 80%"
+    fi
+```
+
 ## Required Permissions
 
 The action requires the following permissions in your workflow:

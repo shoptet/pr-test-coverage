@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="index.php" path="">
+    <totals>
+      <lines total="36" comments="0" code="36" executable="12" executed="6" percent="50.00"/>
+      <methods count="5" tested="3" percent="60.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="1" percent="100.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="Application" namespace="global" start="3" executable="12" executed="6" crap="10">
+      <namespace name="global"/>
+      <method name="__construct" signature="__construct()" start="9" end="12" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="run" signature="run(): void" start="14" end="17" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="processData" signature="processData(): void" start="19" end="22" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="performCalculation" signature="performCalculation(): int" start="24" end="26" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="getServiceGreeting" signature="getServiceGreeting(): string" start="28" end="30" crap="1" executable="1" executed="1" coverage="100"/>
+    </class>
+    <coverage>
+      <line nr="3">
+        <covered by="ApplicationTest::testConstructor"/>
+      </line>
+      <line nr="7">
+        <covered by="ApplicationTest::testConstructor"/>
+      </line>
+      <line nr="10">
+        <covered by="ApplicationTest::testConstructor"/>
+      </line>
+      <line nr="11">
+        <covered by="ApplicationTest::testConstructor"/>
+      </line>
+      <line nr="25">
+        <covered by="ApplicationTest::testPerformCalculation"/>
+      </line>
+      <line nr="29">
+        <covered by="ApplicationTest::testGetServiceGreeting"/>
+      </line>
+    </coverage>
+  </file>
+</phpunit>

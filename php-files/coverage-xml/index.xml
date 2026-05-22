@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <build time="Thu May 22 08:00:00 UTC 2026" phpunit="11.0.0" coverage="11.0.0">
+    <runtime name="PHP" version="8.3.0" url="https://www.php.net/"/>
+    <driver name="xdebug" version="3.3.0"/>
+  </build>
+  <project source="/home/runner/work/pr-test-coverage/pr-test-coverage/php-files/src">
+    <tests>
+      <test name="ApplicationTest::testConstructor" size="unknown" status="success"/>
+      <test name="ApplicationTest::testPerformCalculation" size="unknown" status="success"/>
+      <test name="ApplicationTest::testGetServiceGreeting" size="unknown" status="success"/>
+      <test name="Service1Test::testGreet" size="unknown" status="success"/>
+      <test name="Service1Test::testCalculate" size="unknown" status="success"/>
+    </tests>
+    <directory name="/">
+      <totals>
+        <lines total="64" comments="0" code="64" executable="27" executed="11" percent="40.74"/>
+        <methods count="8" tested="5" percent="62.50"/>
+        <functions count="0" tested="0" percent="0"/>
+        <classes count="2" tested="2" percent="100.00"/>
+        <traits count="0" tested="0" percent="0"/>
+      </totals>
+      <file name="index.php" href="index.php.xml">
+        <totals>
+          <lines total="36" comments="0" code="36" executable="12" executed="6" percent="50.00"/>
+          <methods count="5" tested="3" percent="60.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="1" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+      <directory name="services">
+        <totals>
+          <lines total="28" comments="0" code="28" executable="15" executed="5" percent="33.33"/>
+          <methods count="3" tested="2" percent="66.67"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="1" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="service1.php" href="services/service1.php.xml">
+          <totals>
+            <lines total="28" comments="0" code="28" executable="15" executed="5" percent="33.33"/>
+            <methods count="3" tested="2" percent="66.67"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="1" percent="100.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+    </directory>
+  </project>
+</phpunit>

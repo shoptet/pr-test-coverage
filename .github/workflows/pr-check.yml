@@ -13,25 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify clover.xml exists
+      - name: Verify coverage-xml exists
         run: |
-          if [ ! -f php-files/coverage/clover.xml ]; then
-            echo "Error: clover.xml was not generated"
+          if [ ! -d php-files/coverage-xml ]; then
+            echo "Error: coverage-xml directory was not created"
             exit 1
           fi
-          echo "✓ clover.xml exists"
-          echo "Coverage file size: $(wc -c < php-files/coverage/clover.xml) bytes"
+          if [ ! -f php-files/coverage-xml/index.xml ]; then
+            echo "Error: coverage-xml/index.xml was not generated"
+            exit 1
+          fi
+          echo "✓ coverage-xml directory exists"
+          echo "✓ coverage-xml/index.xml exists"
+          echo "Coverage index file size: $(wc -c < php-files/coverage-xml/index.xml) bytes"
 
-      - name: Display coverage file snippet
+      - name: Display coverage index file snippet
         run: |
-          echo "First 50 lines of clover.xml:"
-          head -n 50 php-files/coverage/clover.xml
+          echo "First 50 lines of coverage-xml/index.xml:"
+          head -n 50 php-files/coverage-xml/index.xml
 
       - name: Test PR Coverage Action
         id: coverage
         uses: ./
         with:
-          clover-file: php-files/coverage/clover.xml
+          coverage-xml-dir: php-files/coverage-xml
           github-token: ${{ secrets.GITHUB_TOKEN }}
           all-files-minimum-coverage: 0
           changed-files-minimum-coverage: 0

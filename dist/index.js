@@ -88933,127 +88933,6 @@ ZipStream.prototype.finalize = function() {
 
 /***/ }),
 
-/***/ 88393:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CloverParser = void 0;
-const fs = __importStar(__nccwpck_require__(79896));
-const xml2js = __importStar(__nccwpck_require__(758));
-class CloverParser {
-    async parse(cloverFilePath) {
-        try {
-            const xmlContent = fs.readFileSync(cloverFilePath, 'utf-8');
-            const parser = new xml2js.Parser();
-            const result = await parser.parseStringPromise(xmlContent);
-            const coverageData = {};
-            // Navigate the Clover XML structure
-            // Structure: coverage > project > package > file
-            const coverage = result.coverage;
-            if (!coverage) {
-                throw new Error('Invalid Clover XML: missing coverage element');
-            }
-            const project = coverage.project?.[0];
-            if (!project) {
-                return coverageData; // Empty coverage
-            }
-            // Helper function to process file elements
-            const processFile = (file) => {
-                const fileName = file.$.path || file.$.name;
-                if (!fileName) {
-                    return;
-                }
-                // Extract metrics from file element
-                const metrics = file.metrics?.[0]?.$;
-                if (!metrics) {
-                    return;
-                }
-                // Parse Clover metrics
-                // Clover uses: elements, coveredelements, statements, coveredstatements,
-                // conditionals, coveredconditionals, methods, coveredmethods
-                const linesTotal = parseInt(metrics.statements || '0', 10);
-                const linesHit = parseInt(metrics.coveredstatements || '0', 10);
-                const branchesTotal = parseInt(metrics.conditionals || '0', 10);
-                const branchesHit = parseInt(metrics.coveredconditionals || '0', 10);
-                const functionsTotal = parseInt(metrics.methods || '0', 10);
-                const functionsHit = parseInt(metrics.coveredmethods || '0', 10);
-                const fileCoverage = {
-                    file: fileName,
-                    lines: {
-                        found: linesTotal,
-                        hit: linesHit
-                    },
-                    functions: {
-                        found: functionsTotal,
-                        hit: functionsHit
-                    },
-                    branches: {
-                        found: branchesTotal,
-                        hit: branchesHit
-                    }
-                };
-                coverageData[fileName] = fileCoverage;
-            };
-            // Process files directly under project (some Clover formats)
-            const directFiles = project.file || [];
-            for (const file of directFiles) {
-                processFile(file);
-            }
-            // Process packages (standard Clover format)
-            const packages = project.package || [];
-            for (const pkg of packages) {
-                const files = pkg.file || [];
-                for (const file of files) {
-                    processFile(file);
-                }
-            }
-            return coverageData;
-        }
-        catch (error) {
-            throw new Error(`Failed to parse Clover file: ${error}`);
-        }
-    }
-}
-exports.CloverParser = CloverParser;
-
-
-/***/ }),
-
 /***/ 79460:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -89717,6 +89596,181 @@ exports.MarkdownTableGenerator = MarkdownTableGenerator;
 
 /***/ }),
 
+/***/ 44999:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PhpUnitXmlParser = void 0;
+const fs = __importStar(__nccwpck_require__(79896));
+const xml2js = __importStar(__nccwpck_require__(758));
+const path = __importStar(__nccwpck_require__(16928));
+class PhpUnitXmlParser {
+    async parse(coverageXmlDir) {
+        try {
+            const indexPath = path.join(coverageXmlDir, 'index.xml');
+            if (!fs.existsSync(indexPath)) {
+                throw new Error(`Coverage XML directory must contain index.xml at: ${indexPath}`);
+            }
+            const xmlContent = fs.readFileSync(indexPath, 'utf-8');
+            const parser = new xml2js.Parser();
+            const result = await parser.parseStringPromise(xmlContent);
+            const coverageData = {};
+            // Navigate the PHPUnit XML structure
+            // Structure: phpunit > project > directory > file
+            const phpunit = result.phpunit;
+            if (!phpunit) {
+                throw new Error('Invalid PHPUnit XML: missing phpunit element');
+            }
+            const project = phpunit.project?.[0];
+            if (!project) {
+                return coverageData; // Empty coverage
+            }
+            // Helper function to process file elements recursively
+            const processDirectory = (dir) => {
+                // Process files in this directory
+                const files = dir.file || [];
+                for (const file of files) {
+                    processFile(file);
+                }
+                // Process subdirectories recursively
+                const subdirs = dir.directory || [];
+                for (const subdir of subdirs) {
+                    processDirectory(subdir);
+                }
+            };
+            // Helper function to process file elements
+            const processFile = (file) => {
+                const href = file.$.href;
+                const fileName = file.$.name;
+                if (!href || !fileName) {
+                    return;
+                }
+                // Extract metrics from file/totals element
+                const totals = file.totals?.[0];
+                if (!totals) {
+                    return;
+                }
+                const lines = totals.lines?.[0]?.$;
+                const methods = totals.methods?.[0]?.$;
+                const functions = totals.functions?.[0]?.$;
+                if (!lines) {
+                    return;
+                }
+                // Parse PHPUnit XML metrics
+                // PHPUnit XML uses: executable (total lines), executed (lines hit)
+                const linesTotal = parseInt(lines.executable || '0', 10);
+                const linesHit = parseInt(lines.executed || '0', 10);
+                // Methods and functions are combined in PHPUnit
+                const methodsTotal = parseInt(methods?.count || '0', 10);
+                const methodsHit = parseInt(methods?.tested || '0', 10);
+                const functionsTotal = parseInt(functions?.count || '0', 10);
+                const functionsHit = parseInt(functions?.tested || '0', 10);
+                // Combine methods and functions
+                const combinedFunctionsTotal = methodsTotal + functionsTotal;
+                const combinedFunctionsHit = methodsHit + functionsHit;
+                // PHPUnit XML doesn't track branches separately in the totals
+                // We'll set branches to 0 for now
+                const branchesTotal = 0;
+                const branchesHit = 0;
+                // Build the full file path by parsing the href
+                // The href is relative to the coverage-xml directory (e.g., "Covered/Calculator.php.xml")
+                // We need to extract the actual source file path
+                const fileXmlPath = path.join(coverageXmlDir, href);
+                const filePath = this.extractSourcePath(fileXmlPath, fileName);
+                const fileCoverage = {
+                    file: filePath,
+                    lines: {
+                        found: linesTotal,
+                        hit: linesHit
+                    },
+                    functions: {
+                        found: combinedFunctionsTotal,
+                        hit: combinedFunctionsHit
+                    },
+                    branches: {
+                        found: branchesTotal,
+                        hit: branchesHit
+                    }
+                };
+                coverageData[filePath] = fileCoverage;
+            };
+            // Start processing from the root directory
+            const rootDirectory = project.directory?.[0];
+            if (rootDirectory) {
+                processDirectory(rootDirectory);
+            }
+            return coverageData;
+        }
+        catch (error) {
+            throw new Error(`Failed to parse PHPUnit XML: ${error}`);
+        }
+    }
+    /**
+     * Extracts the source file path from a PHPUnit XML file
+     * This reads the individual file XML to get the path attribute
+     */
+    extractSourcePath(fileXmlPath, fileName) {
+        try {
+            if (!fs.existsSync(fileXmlPath)) {
+                // Fallback to just the filename if XML doesn't exist
+                return fileName;
+            }
+            const xmlContent = fs.readFileSync(fileXmlPath, 'utf-8');
+            const match = xmlContent.match(/path="([^"]*)"/);
+            if (match && match[1]) {
+                const dirPath = match[1];
+                // Remove leading slash and combine with filename
+                const cleanPath = dirPath.replace(/^\//, '');
+                return cleanPath ? `${cleanPath}/${fileName}` : fileName;
+            }
+            return fileName;
+        }
+        catch (error) {
+            // On error, return just the filename
+            return fileName;
+        }
+    }
+}
+exports.PhpUnitXmlParser = PhpUnitXmlParser;
+
+
+/***/ }),
+
 /***/ 19329:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -89762,7 +89816,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PrTestCoverageAction = void 0;
 const core = __importStar(__nccwpck_require__(37484));
 const artifact_1 = __importDefault(__nccwpck_require__(76846));
-const CloverParser_1 = __nccwpck_require__(88393);
+const PhpUnitXmlParser_1 = __nccwpck_require__(44999);
 const CoverageReporter_1 = __nccwpck_require__(79460);
 const GitHubService_1 = __nccwpck_require__(93705);
 const fs = __importStar(__nccwpck_require__(79896));
@@ -89772,7 +89826,7 @@ class PrTestCoverageAction {
         this.inputs = inputs;
         this.context = context;
         this.githubService = new GitHubService_1.GitHubService(inputs.githubToken, context);
-        this.cloverParser = new CloverParser_1.CloverParser();
+        this.phpunitXmlParser = new PhpUnitXmlParser_1.PhpUnitXmlParser();
         this.coverageReporter = new CoverageReporter_1.CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage);
     }
     async execute() {
@@ -89788,13 +89842,13 @@ class PrTestCoverageAction {
             process.chdir(this.inputs.workingDirectory);
             core.info(`Changed working directory to: ${this.inputs.workingDirectory}`);
         }
-        // Parse Clover file
-        const cloverPath = path.resolve(this.inputs.cloverFile);
-        if (!fs.existsSync(cloverPath)) {
-            throw new Error(`Clover file not found: ${cloverPath}`);
+        // Parse PHPUnit XML coverage directory
+        const coverageXmlPath = path.resolve(this.inputs.coverageXmlDir);
+        if (!fs.existsSync(coverageXmlPath)) {
+            throw new Error(`Coverage XML directory not found: ${coverageXmlPath}`);
         }
-        core.info(`Parsing Clover file: ${cloverPath}`);
-        const coverageData = await this.cloverParser.parse(cloverPath);
+        core.info(`Parsing PHPUnit XML coverage from: ${coverageXmlPath}`);
+        const coverageData = await this.phpunitXmlParser.parse(coverageXmlPath);
         // Get changed files from PR
         core.info('Getting changed files from PR...');
         const changedFiles = await this.githubService.getChangedFiles();
@@ -89825,8 +89879,8 @@ class PrTestCoverageAction {
         core.info('PR Test Coverage Action completed successfully!');
     }
     validateInputs() {
-        if (!this.inputs.cloverFile) {
-            throw new Error('clover-file input is required');
+        if (!this.inputs.coverageXmlDir) {
+            throw new Error('coverage-xml-dir input is required');
         }
         if (!this.inputs.githubToken) {
             throw new Error('github-token input is required');
@@ -89880,7 +89934,7 @@ class PrTestCoverageAction {
     }
     async uploadArtifact() {
         try {
-            const files = [this.inputs.cloverFile];
+            const files = [this.inputs.coverageXmlDir];
             // Make artifact name unique to avoid conflicts
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const uniqueArtifactName = `${this.inputs.artifactName}-${timestamp}`;
@@ -89946,7 +90000,7 @@ const PrTestCoverageAction_1 = __nccwpck_require__(19329);
 async function run() {
     try {
         const inputs = {
-            cloverFile: core.getInput('clover-file', { required: true }),
+            coverageXmlDir: core.getInput('coverage-xml-dir', { required: true }),
             githubToken: core.getInput('github-token', { required: true }),
             workingDirectory: core.getInput('working-directory'),
             allFilesMinimumCoverage: parseInt(core.getInput('all-files-minimum-coverage') || '0', 10),

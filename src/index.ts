@@ -5,7 +5,7 @@ import { PrTestCoverageAction } from './PrTestCoverageAction'
 async function run(): Promise<void> {
   try {
     const inputs = {
-      cloverFile: core.getInput('clover-file', { required: true }),
+      coverageXmlDir: core.getInput('coverage-xml-dir', { required: true }),
       githubToken: core.getInput('github-token', { required: true }),
       workingDirectory: core.getInput('working-directory'),
       allFilesMinimumCoverage: parseInt(core.getInput('all-files-minimum-coverage') || '0', 10),

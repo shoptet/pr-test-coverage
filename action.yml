@@ -6,8 +6,8 @@ branding:
   color: 'green'
 
 inputs:
-  clover-file:
-    description: 'Path to the Clover XML file (e.g., coverage/clover.xml)'
+  coverage-xml-dir:
+    description: 'Path to the PHPUnit XML coverage directory (e.g., coverage-xml)'
     required: true
   github-token:
     description: 'GitHub token for accessing API and posting comments'

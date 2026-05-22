@@ -1,0 +1,40 @@
+name: PR Check - Verify Coverage Output
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-coverage-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify clover.xml exists
+        run: |
+          if [ ! -f php-files/coverage/clover.xml ]; then
+            echo "Error: clover.xml was not generated"
+            exit 1
+          fi
+          echo "✓ clover.xml exists"
+          echo "Coverage file size: $(wc -c < php-files/coverage/clover.xml) bytes"
+
+      - name: Display coverage file snippet
+        run: |
+          echo "First 50 lines of clover.xml:"
+          head -n 50 php-files/coverage/clover.xml
+
+      - name: Test PR Coverage Action
+        uses: ./
+        with:
+          clover-file: php-files/coverage/clover.xml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          all-files-minimum-coverage: 0
+          changed-files-minimum-coverage: 0
+          update-comment: true
+
+      - name: Verify action completed
+        run: echo "✓ PR Test Coverage action completed successfully"

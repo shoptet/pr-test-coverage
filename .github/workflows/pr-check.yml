@@ -28,6 +28,7 @@ jobs:
           head -n 50 php-files/coverage/clover.xml
 
       - name: Test PR Coverage Action
+        id: coverage
         uses: ./
         with:
           clover-file: php-files/coverage/clover.xml
@@ -36,5 +37,38 @@ jobs:
           changed-files-minimum-coverage: 0
           update-comment: true
 
-      - name: Verify action completed
-        run: echo "✓ PR Test Coverage action completed successfully"
+      - name: Verify action outputs
+        run: |
+          echo "=== Coverage Report Outputs ==="
+          echo "All files coverage: ${{ steps.coverage.outputs.all-files-coverage }}%"
+          echo "Changed files coverage: ${{ steps.coverage.outputs.changed-files-coverage }}%"
+          echo "All files lines: ${{ steps.coverage.outputs.all-files-lines-hit }}/${{ steps.coverage.outputs.all-files-lines-total }}"
+          echo "Changed files lines: ${{ steps.coverage.outputs.changed-files-lines-hit }}/${{ steps.coverage.outputs.changed-files-lines-total }}"
+          echo ""
+
+          # Validate outputs are not empty
+          if [ -z "${{ steps.coverage.outputs.all-files-coverage }}" ]; then
+            echo "❌ Error: all-files-coverage output is empty"
+            exit 1
+          fi
+
+          if [ -z "${{ steps.coverage.outputs.changed-files-coverage }}" ]; then
+            echo "❌ Error: changed-files-coverage output is empty"
+            exit 1
+          fi
+
+          # Validate coverage values are numeric and in valid range
+          all_coverage="${{ steps.coverage.outputs.all-files-coverage }}"
+          if ! [[ "$all_coverage" =~ ^[0-9]+\.?[0-9]*$ ]]; then
+            echo "❌ Error: all-files-coverage is not a valid number: $all_coverage"
+            exit 1
+          fi
+
+          # Check if coverage is reasonable (0-100%)
+          if (( $(echo "$all_coverage > 100" | bc -l) )); then
+            echo "❌ Error: all-files-coverage exceeds 100%: $all_coverage"
+            exit 1
+          fi
+
+          echo "✓ All coverage outputs are valid"
+          echo "✓ PR Test Coverage action completed successfully"

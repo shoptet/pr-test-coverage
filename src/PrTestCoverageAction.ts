@@ -61,6 +61,14 @@ export class PrTestCoverageAction {
     core.info('Generating coverage report...')
     const report = this.coverageReporter.generateReport(coverageData, changedFiles)
 
+    // Set action outputs
+    core.setOutput('all-files-coverage', report.allFiles.linesCoverage.toFixed(2))
+    core.setOutput('changed-files-coverage', report.changedFiles.linesCoverage.toFixed(2))
+    core.setOutput('all-files-lines-hit', report.allFiles.linesHit.toString())
+    core.setOutput('all-files-lines-total', report.allFiles.linesTotal.toString())
+    core.setOutput('changed-files-lines-hit', report.changedFiles.linesHit.toString())
+    core.setOutput('changed-files-lines-total', report.changedFiles.linesTotal.toString())
+
     // Check coverage thresholds
     this.checkCoverageThresholds(report)
 

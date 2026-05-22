@@ -1,5 +1,6 @@
 <?php
 
+// Application entry point
 require_once __DIR__ . '/services/service1.php';
 
 use App\Services\Service1;

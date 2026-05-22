@@ -34,6 +34,20 @@ inputs:
     required: false
     default: 'true'
 
+outputs:
+  all-files-coverage:
+    description: 'Overall line coverage percentage for all files'
+  changed-files-coverage:
+    description: 'Line coverage percentage for changed files'
+  all-files-lines-hit:
+    description: 'Number of lines covered in all files'
+  all-files-lines-total:
+    description: 'Total number of lines in all files'
+  changed-files-lines-hit:
+    description: 'Number of lines covered in changed files'
+  changed-files-lines-total:
+    description: 'Total number of lines in changed files'
+
 runs:
   using: 'node20'
   main: 'dist/index.js'

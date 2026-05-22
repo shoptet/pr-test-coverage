@@ -61,6 +61,17 @@ export class PrTestCoverageAction {
     core.info('Generating coverage report...')
     const report = this.coverageReporter.generateReport(coverageData, changedFiles)
 
+    // Log coverage report summary
+    this.logCoverageReport(report)
+
+    // Set action outputs
+    core.setOutput('all-files-coverage', report.allFiles.linesCoverage.toFixed(2))
+    core.setOutput('changed-files-coverage', report.changedFiles.linesCoverage.toFixed(2))
+    core.setOutput('all-files-lines-hit', report.allFiles.linesHit.toString())
+    core.setOutput('all-files-lines-total', report.allFiles.linesTotal.toString())
+    core.setOutput('changed-files-lines-hit', report.changedFiles.linesHit.toString())
+    core.setOutput('changed-files-lines-total', report.changedFiles.linesTotal.toString())
+
     // Check coverage thresholds
     this.checkCoverageThresholds(report)
 
@@ -116,6 +127,33 @@ export class PrTestCoverageAction {
         )
       }
     }
+  }
+
+  private logCoverageReport(report: CoverageReport): void {
+    core.info('='.repeat(60))
+    core.info('Coverage Report Summary')
+    core.info('='.repeat(60))
+    core.info('')
+    core.info('All Files:')
+    core.info(`  Lines:     ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(2)}%)`)
+    core.info(`  Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(2)}%)`)
+    core.info(`  Branches:  ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(2)}%)`)
+    core.info('')
+    core.info('Changed Files:')
+    core.info(`  Lines:     ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(2)}%)`)
+    core.info(`  Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(2)}%)`)
+    core.info(`  Branches:  ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(2)}%)`)
+
+    if (report.fileDetails.length > 0) {
+      core.info('')
+      core.info(`Changed Files (${report.fileDetails.length}):`)
+      report.fileDetails.forEach(file => {
+        const linesPct = file.lines.total > 0 ? file.lines.percentage.toFixed(1) : '0.0'
+        core.info(`  ${file.file}: ${file.lines.hit}/${file.lines.total} lines (${linesPct}%)`)
+      })
+    }
+
+    core.info('='.repeat(60))
   }
 
   private async uploadArtifact(): Promise<void> {

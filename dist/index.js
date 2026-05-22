@@ -88992,45 +88992,54 @@ class CloverParser {
             if (!project) {
                 return coverageData; // Empty coverage
             }
-            // Process packages
+            // Helper function to process file elements
+            const processFile = (file) => {
+                const fileName = file.$.path || file.$.name;
+                if (!fileName) {
+                    return;
+                }
+                // Extract metrics from file element
+                const metrics = file.metrics?.[0]?.$;
+                if (!metrics) {
+                    return;
+                }
+                // Parse Clover metrics
+                // Clover uses: elements, coveredelements, statements, coveredstatements,
+                // conditionals, coveredconditionals, methods, coveredmethods
+                const linesTotal = parseInt(metrics.statements || '0', 10);
+                const linesHit = parseInt(metrics.coveredstatements || '0', 10);
+                const branchesTotal = parseInt(metrics.conditionals || '0', 10);
+                const branchesHit = parseInt(metrics.coveredconditionals || '0', 10);
+                const functionsTotal = parseInt(metrics.methods || '0', 10);
+                const functionsHit = parseInt(metrics.coveredmethods || '0', 10);
+                const fileCoverage = {
+                    file: fileName,
+                    lines: {
+                        found: linesTotal,
+                        hit: linesHit
+                    },
+                    functions: {
+                        found: functionsTotal,
+                        hit: functionsHit
+                    },
+                    branches: {
+                        found: branchesTotal,
+                        hit: branchesHit
+                    }
+                };
+                coverageData[fileName] = fileCoverage;
+            };
+            // Process files directly under project (some Clover formats)
+            const directFiles = project.file || [];
+            for (const file of directFiles) {
+                processFile(file);
+            }
+            // Process packages (standard Clover format)
             const packages = project.package || [];
             for (const pkg of packages) {
                 const files = pkg.file || [];
                 for (const file of files) {
-                    const fileName = file.$.path || file.$.name;
-                    if (!fileName) {
-                        continue;
-                    }
-                    // Extract metrics from file element
-                    const metrics = file.metrics?.[0]?.$;
-                    if (!metrics) {
-                        continue;
-                    }
-                    // Parse Clover metrics
-                    // Clover uses: elements, coveredelements, statements, coveredstatements,
-                    // conditionals, coveredconditionals, methods, coveredmethods
-                    const linesTotal = parseInt(metrics.statements || '0', 10);
-                    const linesHit = parseInt(metrics.coveredstatements || '0', 10);
-                    const branchesTotal = parseInt(metrics.conditionals || '0', 10);
-                    const branchesHit = parseInt(metrics.coveredconditionals || '0', 10);
-                    const functionsTotal = parseInt(metrics.methods || '0', 10);
-                    const functionsHit = parseInt(metrics.coveredmethods || '0', 10);
-                    const fileCoverage = {
-                        file: fileName,
-                        lines: {
-                            found: linesTotal,
-                            hit: linesHit
-                        },
-                        functions: {
-                            found: functionsTotal,
-                            hit: functionsHit
-                        },
-                        branches: {
-                            found: branchesTotal,
-                            hit: branchesHit
-                        }
-                    };
-                    coverageData[fileName] = fileCoverage;
+                    processFile(file);
                 }
             }
             return coverageData;
@@ -89793,6 +89802,15 @@ class PrTestCoverageAction {
         // Generate coverage report
         core.info('Generating coverage report...');
         const report = this.coverageReporter.generateReport(coverageData, changedFiles);
+        // Log coverage report summary
+        this.logCoverageReport(report);
+        // Set action outputs
+        core.setOutput('all-files-coverage', report.allFiles.linesCoverage.toFixed(2));
+        core.setOutput('changed-files-coverage', report.changedFiles.linesCoverage.toFixed(2));
+        core.setOutput('all-files-lines-hit', report.allFiles.linesHit.toString());
+        core.setOutput('all-files-lines-total', report.allFiles.linesTotal.toString());
+        core.setOutput('changed-files-lines-hit', report.changedFiles.linesHit.toString());
+        core.setOutput('changed-files-lines-total', report.changedFiles.linesTotal.toString());
         // Check coverage thresholds
         this.checkCoverageThresholds(report);
         // Post or update PR comment
@@ -89835,6 +89853,30 @@ class PrTestCoverageAction {
                 throw new Error(`Changed files coverage (${changedFilesCoverage.toFixed(1)}%) is below minimum threshold (${this.inputs.changedFilesMinimumCoverage}%)`);
             }
         }
+    }
+    logCoverageReport(report) {
+        core.info('='.repeat(60));
+        core.info('Coverage Report Summary');
+        core.info('='.repeat(60));
+        core.info('');
+        core.info('All Files:');
+        core.info(`  Lines:     ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(2)}%)`);
+        core.info(`  Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(2)}%)`);
+        core.info(`  Branches:  ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(2)}%)`);
+        core.info('');
+        core.info('Changed Files:');
+        core.info(`  Lines:     ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(2)}%)`);
+        core.info(`  Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(2)}%)`);
+        core.info(`  Branches:  ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(2)}%)`);
+        if (report.fileDetails.length > 0) {
+            core.info('');
+            core.info(`Changed Files (${report.fileDetails.length}):`);
+            report.fileDetails.forEach(file => {
+                const linesPct = file.lines.total > 0 ? file.lines.percentage.toFixed(1) : '0.0';
+                core.info(`  ${file.file}: ${file.lines.hit}/${file.lines.total} lines (${linesPct}%)`);
+            });
+        }
+        core.info('='.repeat(60));
     }
     async uploadArtifact() {
         try {

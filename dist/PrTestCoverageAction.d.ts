@@ -11,5 +11,6 @@ export declare class PrTestCoverageAction {
     execute(): Promise<void>;
     private validateInputs;
     private checkCoverageThresholds;
+    private logCoverageReport;
     private uploadArtifact;
 }

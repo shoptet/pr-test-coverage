@@ -11,7 +11,7 @@
     </testsuites>
     <coverage>
         <report>
-            <clover outputFile="coverage/clover.xml"/>
+            <xml outputDirectory="coverage-xml"/>
             <html outputDirectory="coverage/html"/>
         </report>
     </coverage>

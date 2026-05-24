@@ -1,5 +1,5 @@
 export interface ActionInputs {
-    cloverFile: string;
+    coverageXmlDir: string;
     githubToken: string;
     workingDirectory: string;
     allFilesMinimumCoverage: number;

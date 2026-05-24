@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="service1.php" path="/services">
+    <totals>
+      <lines total="28" comments="0" code="28" executable="15" executed="5" percent="33.33"/>
+      <methods count="3" tested="2" percent="66.67"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="1" percent="100.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="Service1" namespace="App\Services" start="5" executable="15" executed="5" crap="18">
+      <namespace name="App\Services"/>
+      <method name="greet" signature="greet(): string" start="7" end="9" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="calculate" signature="calculate(int $x): int" start="11" end="16" crap="2" executable="4" executed="4" coverage="100"/>
+      <method name="process" signature="process(array $data): array" start="18" end="27" crap="12" executable="10" executed="0" coverage="0"/>
+    </class>
+    <coverage>
+      <line nr="5">
+        <covered by="Service1Test::testGreet"/>
+        <covered by="Service1Test::testCalculate"/>
+      </line>
+      <line nr="8">
+        <covered by="Service1Test::testGreet"/>
+      </line>
+      <line nr="12">
+        <covered by="Service1Test::testCalculate"/>
+      </line>
+      <line nr="13">
+        <covered by="Service1Test::testCalculate"/>
+      </line>
+      <line nr="15">
+        <covered by="Service1Test::testCalculate"/>
+      </line>
+    </coverage>
+  </file>
+</phpunit>

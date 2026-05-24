@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Test files
+src/__tests__/
+*.test.ts
+vitest.config.ts
+
+# Build artifacts (will be generated during Docker build)
+dist/
+
+# Development files
+.eslintrc.js
+.prettierrc
+
+# Git
+.git/
+.github/
+
+# Documentation
+README.md
+LICENSE
+
+# Test/example data
+php-files/
+specifications/
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+*.log
+npm-debug.log*
+.DS_Store

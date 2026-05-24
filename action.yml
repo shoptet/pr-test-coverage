@@ -49,5 +49,5 @@ outputs:
     description: 'Total number of lines in changed files'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'docker'
+  image: 'Dockerfile'

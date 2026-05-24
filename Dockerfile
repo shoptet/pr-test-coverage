@@ -7,8 +7,8 @@ WORKDIR /action
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies and tsx for running TypeScript
-RUN npm install && npm install -g tsx
+# Install dependencies
+RUN npm install
 
 # Copy source code
 COPY src/ ./src/

@@ -251,7 +251,7 @@ This action is Docker-based, which means:
 
 - The action runs inside a Docker container built from the `Dockerfile`
 - No pre-compiled JavaScript files (`dist/`) need to be committed to the repository
-- TypeScript code is executed directly at runtime using `tsx` (no build step needed)
+- TypeScript code is executed directly at runtime using Node.js 24's native TypeScript support (no build step needed)
 - To test locally, you can build the Docker image with:
   ```bash
   docker build -t pr-test-coverage .
@@ -263,7 +263,7 @@ When making changes to the action:
 
 1. Update the TypeScript source files in `src/`
 2. Test your changes using the PR check workflow or by building the Docker image locally
-3. No need to run `npm run build` - TypeScript runs directly with `tsx`
+3. No need to run `npm run build` - TypeScript runs directly with Node.js native support
 4. Commit only the source files, not the compiled `dist/` directory
 
 ## License

@@ -23,7 +23,7 @@ export class PrTestCoverageAction {
     this.context = context
     this.githubService = new GitHubService(inputs.githubToken, context)
     this.phpunitXmlParser = new PhpUnitXmlParser()
-    this.coverageReporter = new CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage)
+    this.coverageReporter = new CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage, inputs.allFilesCoverageVisible)
   }
 
   async execute(): Promise<void> {

@@ -33,6 +33,10 @@ inputs:
     description: 'Whether to update existing comment or create new one'
     required: false
     default: 'true'
+  all-files-coverage-visible:
+    description: 'Whether to show all files coverage in PR comment (true/false)'
+    required: false
+    default: 'false'
 
 outputs:
   all-files-coverage:

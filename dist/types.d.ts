@@ -6,6 +6,7 @@ export interface ActionInputs {
     changedFilesMinimumCoverage: number;
     artifactName: string;
     updateComment: boolean;
+    allFilesCoverageVisible: boolean;
 }
 export interface FileCoverage {
     file: string;

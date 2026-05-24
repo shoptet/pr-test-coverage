@@ -88977,9 +88977,10 @@ const DirectoryStructure_1 = __nccwpck_require__(49627);
 const MarkdownTableGenerator_1 = __nccwpck_require__(50935);
 const path = __importStar(__nccwpck_require__(16928));
 class CoverageReporter {
-    constructor(allFilesMinimumCoverage = 0, changedFilesMinimumCoverage = 0) {
+    constructor(allFilesMinimumCoverage = 0, changedFilesMinimumCoverage = 0, allFilesCoverageVisible = false) {
         this.allFilesMinimumCoverage = allFilesMinimumCoverage;
         this.changedFilesMinimumCoverage = changedFilesMinimumCoverage;
+        this.allFilesCoverageVisible = allFilesCoverageVisible;
     }
     generateReport(coverageData, changedFiles) {
         const allFiles = this.calculateSummary(Object.values(coverageData));
@@ -89068,11 +89069,13 @@ class CoverageReporter {
         const allFilesStatus = this.getCoverageStatus(report.allFiles.linesCoverage, true);
         const changedFilesStatus = this.getCoverageStatus(report.changedFiles.linesCoverage, false);
         let markdown = `## Coverage Report ${allFilesStatus}\n\n`;
-        // All Files Summary
-        markdown += `### All Files\n`;
-        markdown += `- Lines: ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(1)}%) ${allFilesStatus}\n`;
-        markdown += `- Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(1)}%)\n`;
-        markdown += `- Branches: ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(1)}%)\n\n`;
+        // All Files Summary (conditionally hidden)
+        if (this.allFilesCoverageVisible) {
+            markdown += `### All Files\n`;
+            markdown += `- Lines: ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(1)}%) ${allFilesStatus}\n`;
+            markdown += `- Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(1)}%)\n`;
+            markdown += `- Branches: ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(1)}%)\n\n`;
+        }
         // Changed Files Summary
         markdown += `### Changed Files\n`;
         markdown += `- Lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) ${changedFilesStatus}\n`;
@@ -89844,7 +89847,7 @@ class PrTestCoverageAction {
         this.context = context;
         this.githubService = new GitHubService_1.GitHubService(inputs.githubToken, context);
         this.phpunitXmlParser = new PhpUnitXmlParser_1.PhpUnitXmlParser();
-        this.coverageReporter = new CoverageReporter_1.CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage);
+        this.coverageReporter = new CoverageReporter_1.CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage, inputs.allFilesCoverageVisible);
     }
     async execute() {
         core.info('Starting PR Test Coverage Action...');
@@ -90023,7 +90026,8 @@ async function run() {
             allFilesMinimumCoverage: parseInt(core.getInput('all-files-minimum-coverage') || '0', 10),
             changedFilesMinimumCoverage: parseInt(core.getInput('changed-files-minimum-coverage') || '0', 10),
             artifactName: core.getInput('artifact-name'),
-            updateComment: core.getInput('update-comment').toLowerCase() === 'true'
+            updateComment: core.getInput('update-comment').toLowerCase() === 'true',
+            allFilesCoverageVisible: core.getInput('all-files-coverage-visible').toLowerCase() === 'true'
         };
         const action = new PrTestCoverageAction_1.PrTestCoverageAction(inputs, github.context);
         await action.execute();

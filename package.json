@@ -4,8 +4,6 @@
   "description": "A Github Action to report the test coverage of changed files in a pull request",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
-    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/**/*.ts",

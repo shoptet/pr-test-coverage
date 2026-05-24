@@ -7,14 +7,11 @@ WORKDIR /action
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies (production only for runtime, dev for build)
-RUN npm install
+# Install dependencies and tsx for running TypeScript
+RUN npm install && npm install -g tsx
 
 # Copy source code
 COPY src/ ./src/
-
-# Build TypeScript to JavaScript
-RUN npm run build
 
 # Copy entrypoint script
 COPY entrypoint.sh /entrypoint.sh

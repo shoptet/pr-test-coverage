@@ -51,29 +51,74 @@ jobs:
           echo "Changed files lines: ${{ steps.coverage.outputs.changed-files-lines-hit }}/${{ steps.coverage.outputs.changed-files-lines-total }}"
           echo ""
 
-          # Validate outputs are not empty
-          if [ -z "${{ steps.coverage.outputs.all-files-coverage }}" ]; then
-            echo "❌ Error: all-files-coverage output is empty"
+          # Expected values based on test data
+          EXPECTED_ALL_FILES_COVERAGE="30.67"
+          EXPECTED_ALL_FILES_LINES_HIT="23"
+          EXPECTED_ALL_FILES_LINES_TOTAL="75"
+          EXPECTED_CHANGED_FILES_COVERAGE="40.74"
+          EXPECTED_CHANGED_FILES_LINES_HIT="11"
+          EXPECTED_CHANGED_FILES_LINES_TOTAL="27"
+
+          # Verify all-files-coverage
+          ACTUAL_ALL_FILES_COVERAGE="${{ steps.coverage.outputs.all-files-coverage }}"
+          if [ "$ACTUAL_ALL_FILES_COVERAGE" != "$EXPECTED_ALL_FILES_COVERAGE" ]; then
+            echo "❌ Error: all-files-coverage mismatch"
+            echo "   Expected: $EXPECTED_ALL_FILES_COVERAGE"
+            echo "   Actual: $ACTUAL_ALL_FILES_COVERAGE"
             exit 1
           fi
+          echo "✓ all-files-coverage: $ACTUAL_ALL_FILES_COVERAGE (matches expected)"
 
-          if [ -z "${{ steps.coverage.outputs.changed-files-coverage }}" ]; then
-            echo "❌ Error: changed-files-coverage output is empty"
+          # Verify all-files-lines-hit
+          ACTUAL_ALL_FILES_LINES_HIT="${{ steps.coverage.outputs.all-files-lines-hit }}"
+          if [ "$ACTUAL_ALL_FILES_LINES_HIT" != "$EXPECTED_ALL_FILES_LINES_HIT" ]; then
+            echo "❌ Error: all-files-lines-hit mismatch"
+            echo "   Expected: $EXPECTED_ALL_FILES_LINES_HIT"
+            echo "   Actual: $ACTUAL_ALL_FILES_LINES_HIT"
             exit 1
           fi
+          echo "✓ all-files-lines-hit: $ACTUAL_ALL_FILES_LINES_HIT (matches expected)"
 
-          # Validate coverage values are numeric and in valid range
-          all_coverage="${{ steps.coverage.outputs.all-files-coverage }}"
-          if ! [[ "$all_coverage" =~ ^[0-9]+\.?[0-9]*$ ]]; then
-            echo "❌ Error: all-files-coverage is not a valid number: $all_coverage"
+          # Verify all-files-lines-total
+          ACTUAL_ALL_FILES_LINES_TOTAL="${{ steps.coverage.outputs.all-files-lines-total }}"
+          if [ "$ACTUAL_ALL_FILES_LINES_TOTAL" != "$EXPECTED_ALL_FILES_LINES_TOTAL" ]; then
+            echo "❌ Error: all-files-lines-total mismatch"
+            echo "   Expected: $EXPECTED_ALL_FILES_LINES_TOTAL"
+            echo "   Actual: $ACTUAL_ALL_FILES_LINES_TOTAL"
             exit 1
           fi
+          echo "✓ all-files-lines-total: $ACTUAL_ALL_FILES_LINES_TOTAL (matches expected)"
 
-          # Check if coverage is reasonable (0-100%)
-          if (( $(echo "$all_coverage > 100" | bc -l) )); then
-            echo "❌ Error: all-files-coverage exceeds 100%: $all_coverage"
+          # Verify changed-files-coverage
+          ACTUAL_CHANGED_FILES_COVERAGE="${{ steps.coverage.outputs.changed-files-coverage }}"
+          if [ "$ACTUAL_CHANGED_FILES_COVERAGE" != "$EXPECTED_CHANGED_FILES_COVERAGE" ]; then
+            echo "❌ Error: changed-files-coverage mismatch"
+            echo "   Expected: $EXPECTED_CHANGED_FILES_COVERAGE"
+            echo "   Actual: $ACTUAL_CHANGED_FILES_COVERAGE"
             exit 1
           fi
+          echo "✓ changed-files-coverage: $ACTUAL_CHANGED_FILES_COVERAGE (matches expected)"
 
-          echo "✓ All coverage outputs are valid"
-          echo "✓ PR Test Coverage action completed successfully"
+          # Verify changed-files-lines-hit
+          ACTUAL_CHANGED_FILES_LINES_HIT="${{ steps.coverage.outputs.changed-files-lines-hit }}"
+          if [ "$ACTUAL_CHANGED_FILES_LINES_HIT" != "$EXPECTED_CHANGED_FILES_LINES_HIT" ]; then
+            echo "❌ Error: changed-files-lines-hit mismatch"
+            echo "   Expected: $EXPECTED_CHANGED_FILES_LINES_HIT"
+            echo "   Actual: $ACTUAL_CHANGED_FILES_LINES_HIT"
+            exit 1
+          fi
+          echo "✓ changed-files-lines-hit: $ACTUAL_CHANGED_FILES_LINES_HIT (matches expected)"
+
+          # Verify changed-files-lines-total
+          ACTUAL_CHANGED_FILES_LINES_TOTAL="${{ steps.coverage.outputs.changed-files-lines-total }}"
+          if [ "$ACTUAL_CHANGED_FILES_LINES_TOTAL" != "$EXPECTED_CHANGED_FILES_LINES_TOTAL" ]; then
+            echo "❌ Error: changed-files-lines-total mismatch"
+            echo "   Expected: $EXPECTED_CHANGED_FILES_LINES_TOTAL"
+            echo "   Actual: $ACTUAL_CHANGED_FILES_LINES_TOTAL"
+            exit 1
+          fi
+          echo "✓ changed-files-lines-total: $ACTUAL_CHANGED_FILES_LINES_TOTAL (matches expected)"
+
+          echo ""
+          echo "✅ All coverage outputs match expected values!"
+          echo "✅ PR Test Coverage action completed successfully"

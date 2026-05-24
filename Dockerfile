@@ -1,8 +1,5 @@
 FROM node:20-alpine
 
-# Install git (required for GitHub Actions to work with repository)
-RUN apk add --no-cache git
-
 # Set working directory
 WORKDIR /action
 
@@ -11,7 +8,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies (production only for runtime, dev for build)
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY src/ ./src/

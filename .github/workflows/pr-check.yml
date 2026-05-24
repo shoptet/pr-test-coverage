@@ -41,6 +41,7 @@ jobs:
           all-files-minimum-coverage: 0
           changed-files-minimum-coverage: 0
           update-comment: true
+          test-changed-files: 'php-files/src/index.php,php-files/src/services/service2.php'
 
       - name: Verify action outputs
         run: |
@@ -53,8 +54,7 @@ jobs:
 
           # Expected values based on test data
           # All files: index.php (6/12) + service1.php (5/15) + service2.php (12/48) = 23/75 = 30.67%
-          # Changed files detected by GitHub: index.php (6/12) + service2.php (12/48) = 18/60 = 30.00%
-          # Note: service1.php appears in coverage but not detected as changed by GitHub in PR context
+          # Changed files (mocked in test mode): index.php (6/12) + service2.php (12/48) = 18/60 = 30.00%
           EXPECTED_ALL_FILES_COVERAGE="30.67"
           EXPECTED_ALL_FILES_LINES_HIT="23"
           EXPECTED_ALL_FILES_LINES_TOTAL="75"

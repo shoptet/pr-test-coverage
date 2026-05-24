@@ -33,6 +33,14 @@ inputs:
     description: 'Whether to update existing comment or create new one'
     required: false
     default: 'true'
+  all-files-coverage-visible:
+    description: 'Whether to show all files coverage in PR comment (true/false)'
+    required: false
+    default: 'false'
+  test-changed-files:
+    description: 'Comma-separated list of file paths to mock as changed files (for testing only)'
+    required: false
+    default: ''
 
 outputs:
   all-files-coverage:

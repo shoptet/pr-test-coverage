@@ -6,17 +6,29 @@ import { ChangedFile } from './types'
 export class GitHubService {
   private static readonly FILES_PER_PAGE = 100
   private static readonly COMMENTS_PER_PAGE = 100
-  
+
   private readonly octokit: ReturnType<typeof github.getOctokit>
   private readonly context: Context
   private readonly commentIdentifier = '<!-- PR Test Coverage Report -->'
+  private readonly testChangedFiles: string
 
-  constructor(githubToken: string, context: Context) {
+  constructor(githubToken: string, context: Context, testChangedFiles: string = '') {
     this.octokit = github.getOctokit(githubToken)
     this.context = context
+    this.testChangedFiles = testChangedFiles
   }
 
   async getChangedFiles(): Promise<ChangedFile[]> {
+    // If test mode is enabled, return mock changed files
+    if (this.testChangedFiles) {
+      const files = this.testChangedFiles.split(',').map(filename => filename.trim()).filter(f => f)
+      core.info(`TEST MODE: Using mocked changed files: ${files.join(', ')}`)
+      return files.map(filename => ({
+        filename,
+        status: 'modified'
+      }))
+    }
+
     const pullRequest = this.context.payload.pull_request
     if (!pullRequest) {
       throw new Error('No pull request found in context')

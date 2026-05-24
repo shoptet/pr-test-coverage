@@ -7,10 +7,12 @@ import * as path from 'path'
 export class CoverageReporter {
   private readonly allFilesMinimumCoverage: number
   private readonly changedFilesMinimumCoverage: number
+  private readonly allFilesCoverageVisible: boolean
 
-  constructor(allFilesMinimumCoverage: number = 0, changedFilesMinimumCoverage: number = 0) {
+  constructor(allFilesMinimumCoverage: number = 0, changedFilesMinimumCoverage: number = 0, allFilesCoverageVisible: boolean = false) {
     this.allFilesMinimumCoverage = allFilesMinimumCoverage
     this.changedFilesMinimumCoverage = changedFilesMinimumCoverage
+    this.allFilesCoverageVisible = allFilesCoverageVisible
   }
 
   generateReport(coverageData: CoverageData, changedFiles: ChangedFile[]): CoverageReport {
@@ -114,12 +116,14 @@ export class CoverageReporter {
     const changedFilesStatus = this.getCoverageStatus(report.changedFiles.linesCoverage, false)
 
     let markdown = `## Coverage Report ${allFilesStatus}\n\n`
-    
-    // All Files Summary
-    markdown += `### All Files\n`
-    markdown += `- Lines: ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(1)}%) ${allFilesStatus}\n`
-    markdown += `- Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(1)}%)\n`
-    markdown += `- Branches: ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(1)}%)\n\n`
+
+    // All Files Summary (conditionally hidden)
+    if (this.allFilesCoverageVisible) {
+      markdown += `### All Files\n`
+      markdown += `- Lines: ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(1)}%) ${allFilesStatus}\n`
+      markdown += `- Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(1)}%)\n`
+      markdown += `- Branches: ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(1)}%)\n\n`
+    }
 
     // Changed Files Summary
     markdown += `### Changed Files\n`
@@ -130,7 +134,7 @@ export class CoverageReporter {
     // File Details Table with nested directory structure
     if (report.fileDetails.length > 0) {
       markdown += `Files changed:\n\n`
-      
+
       // Convert fileDetails to FileDetail format for DirectoryStructure
       const fileDetails: FileDetail[] = report.fileDetails.map(file => ({
         file: file.file,
@@ -150,14 +154,14 @@ export class CoverageReporter {
           percentage: file.branches.percentage
         }
       }))
-      
+
       // Build directory tree and generate nested table
       const directoryStructure = new DirectoryStructure()
       const directoryTree = directoryStructure.buildDirectoryTree(fileDetails)
-      
+
       const markdownGenerator = new MarkdownTableGenerator()
       const nestedTable = markdownGenerator.generateTable(directoryTree)
-      
+
       markdown += nestedTable
     }
 

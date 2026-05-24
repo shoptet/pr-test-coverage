@@ -73,6 +73,9 @@ jobs:
     
     # Optional: Update existing comment vs create new (default: true)
     update-comment: true
+
+    # Optional: Show all files coverage in PR comment (default: false)
+    all-files-coverage-visible: false
 ```
 
 ## Inputs
@@ -86,6 +89,7 @@ jobs:
 | `changed-files-minimum-coverage` | Minimum coverage percentage for changed files (0-100) | ❌ | `0` |
 | `artifact-name` | Name for coverage artifact upload (empty to skip) | ❌ | `''` |
 | `update-comment` | Whether to update existing comment or create new one | ❌ | `true` |
+| `all-files-coverage-visible` | Whether to show all files coverage in PR comment | ❌ | `false` |
 
 ## Outputs
 
@@ -130,22 +134,24 @@ permissions:
 
 ## Example Output
 
-The action will post a comment on your pull request that looks like this:
+The action will post a comment on your pull request. By default, only the "Changed Files" section is shown. To also display the "All Files" section, set `all-files-coverage-visible: true`.
+
+**Example with `all-files-coverage-visible: true`:**
 
 > ## Coverage Report ⚠️
-> 
+>
 > ### All Files
 > - Lines: 847/1205 (70.3%) ⚠️
 > - Functions: 156/198 (78.8%)
 > - Branches: 234/298 (78.5%)
-> 
+>
 > ### Changed Files
 > - Lines: 142/165 (86.1%) ✅
 > - Functions: 28/32 (87.5%)
 > - Branches: 45/52 (86.5%)
-> 
+>
 > Files changed:
-> 
+>
 > | **File** | **Lines** | **Line %** | **Functions** | **Function %** | **Branches** | **Branch %** |
 > |------|-------|--------|-----------|------------|----------|----------|
 > | **📁 src**                                        | **142/165** | **86.1%** | **28/32** | **87.5%** | **45/52** | **86.5%** |

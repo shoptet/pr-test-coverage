@@ -13,19 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          php-version: '8.2'
-          coverage: none
+          node-version: '20'
 
       - name: Install dependencies
-        working-directory: php-files
-        run: composer install --prefer-dist --no-progress
+        run: npm ci
 
       - name: Run unit tests
-        working-directory: php-files
-        run: vendor/bin/phpunit
+        run: npm run test
 
   test-coverage-action:
     runs-on: ubuntu-latest

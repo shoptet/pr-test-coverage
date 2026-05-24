@@ -89393,12 +89393,22 @@ exports.GitHubService = void 0;
 const core = __importStar(__nccwpck_require__(37484));
 const github = __importStar(__nccwpck_require__(93228));
 class GitHubService {
-    constructor(githubToken, context) {
+    constructor(githubToken, context, testChangedFiles = '') {
         this.commentIdentifier = '<!-- PR Test Coverage Report -->';
         this.octokit = github.getOctokit(githubToken);
         this.context = context;
+        this.testChangedFiles = testChangedFiles;
     }
     async getChangedFiles() {
+        // If test mode is enabled, return mock changed files
+        if (this.testChangedFiles) {
+            const files = this.testChangedFiles.split(',').map(filename => filename.trim()).filter(f => f);
+            core.info(`TEST MODE: Using mocked changed files: ${files.join(', ')}`);
+            return files.map(filename => ({
+                filename,
+                status: 'modified'
+            }));
+        }
         const pullRequest = this.context.payload.pull_request;
         if (!pullRequest) {
             throw new Error('No pull request found in context');
@@ -89845,7 +89855,7 @@ class PrTestCoverageAction {
     constructor(inputs, context) {
         this.inputs = inputs;
         this.context = context;
-        this.githubService = new GitHubService_1.GitHubService(inputs.githubToken, context);
+        this.githubService = new GitHubService_1.GitHubService(inputs.githubToken, context, inputs.testChangedFiles);
         this.phpunitXmlParser = new PhpUnitXmlParser_1.PhpUnitXmlParser();
         this.coverageReporter = new CoverageReporter_1.CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage, inputs.allFilesCoverageVisible);
     }
@@ -90027,7 +90037,8 @@ async function run() {
             changedFilesMinimumCoverage: parseInt(core.getInput('changed-files-minimum-coverage') || '0', 10),
             artifactName: core.getInput('artifact-name'),
             updateComment: core.getInput('update-comment').toLowerCase() === 'true',
-            allFilesCoverageVisible: core.getInput('all-files-coverage-visible').toLowerCase() === 'true'
+            allFilesCoverageVisible: core.getInput('all-files-coverage-visible').toLowerCase() === 'true',
+            testChangedFiles: core.getInput('test-changed-files')
         };
         const action = new PrTestCoverageAction_1.PrTestCoverageAction(inputs, github.context);
         await action.execute();

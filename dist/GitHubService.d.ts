@@ -6,7 +6,8 @@ export declare class GitHubService {
     private readonly octokit;
     private readonly context;
     private readonly commentIdentifier;
-    constructor(githubToken: string, context: Context);
+    private readonly testChangedFiles;
+    constructor(githubToken: string, context: Context, testChangedFiles?: string);
     getChangedFiles(): Promise<ChangedFile[]>;
     postOrUpdateComment(commentBody: string, shouldUpdate: boolean): Promise<void>;
     private findExistingComment;

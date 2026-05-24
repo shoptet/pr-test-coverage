@@ -12,7 +12,8 @@ async function run(): Promise<void> {
       changedFilesMinimumCoverage: parseInt(core.getInput('changed-files-minimum-coverage') || '0', 10),
       artifactName: core.getInput('artifact-name'),
       updateComment: core.getInput('update-comment').toLowerCase() === 'true',
-      allFilesCoverageVisible: core.getInput('all-files-coverage-visible').toLowerCase() === 'true'
+      allFilesCoverageVisible: core.getInput('all-files-coverage-visible').toLowerCase() === 'true',
+      testChangedFiles: core.getInput('test-changed-files')
     }
 
     const action = new PrTestCoverageAction(inputs, github.context)

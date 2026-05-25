@@ -4,8 +4,7 @@
   "description": "A Github Action to report the test coverage of changed files in a pull request",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
-    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --outfile=dist/index.js --minify",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/**/*.ts",
@@ -26,6 +25,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
+    "esbuild": "^0.28.0",
     "@types/node": "^20.11.0",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.19.0",

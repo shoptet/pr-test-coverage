@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import artifact from '@actions/artifact'
 import { Context } from '@actions/github/lib/context'
-import { PhpUnitXmlParser } from './PhpUnitXmlParser'
+import { CloverParser } from './CloverParser'
 import { CoverageReporter } from './CoverageReporter'
 import { GitHubService } from './GitHubService'
 import { CoverageData, ActionInputs, CoverageReport } from './types'
@@ -15,14 +15,14 @@ export class PrTestCoverageAction {
   private readonly inputs: ActionInputs
   private readonly context: Context
   private readonly githubService: GitHubService
-  private readonly phpunitXmlParser: PhpUnitXmlParser
+  private readonly cloverParser: CloverParser
   private readonly coverageReporter: CoverageReporter
 
   constructor(inputs: ActionInputs, context: Context) {
     this.inputs = inputs
     this.context = context
     this.githubService = new GitHubService(inputs.githubToken, context)
-    this.phpunitXmlParser = new PhpUnitXmlParser()
+    this.cloverParser = new CloverParser()
     this.coverageReporter = new CoverageReporter(inputs.allFilesMinimumCoverage, inputs.changedFilesMinimumCoverage)
   }
 
@@ -43,14 +43,14 @@ export class PrTestCoverageAction {
       core.info(`Changed working directory to: ${this.inputs.workingDirectory}`)
     }
 
-    // Parse PHPUnit XML coverage directory
-    const coverageXmlPath = path.resolve(this.inputs.coverageXmlDir)
-    if (!fs.existsSync(coverageXmlPath)) {
-      throw new Error(`Coverage XML directory not found: ${coverageXmlPath}`)
+    // Parse coverage XML file (Clover or JUnit format)
+    const coverageFilePath = path.resolve(this.inputs.coverageFile)
+    if (!fs.existsSync(coverageFilePath)) {
+      throw new Error(`Coverage file not found: ${coverageFilePath}`)
     }
 
-    core.info(`Parsing PHPUnit XML coverage from: ${coverageXmlPath}`)
-    const coverageData = await this.phpunitXmlParser.parse(coverageXmlPath)
+    core.info(`Parsing coverage XML from: ${coverageFilePath}`)
+    const coverageData = await this.cloverParser.parse(coverageFilePath)
 
     // Get changed files from PR
     core.info('Getting changed files from PR...')
@@ -90,18 +90,18 @@ export class PrTestCoverageAction {
   }
 
   private validateInputs(): void {
-    if (!this.inputs.coverageXmlDir) {
-      throw new Error('coverage-xml-dir input is required')
+    if (!this.inputs.coverageFile) {
+      throw new Error('coverage-file input is required')
     }
-    
+
     if (!this.inputs.githubToken) {
       throw new Error('github-token input is required')
     }
-    
+
     if (this.inputs.allFilesMinimumCoverage < 0 || this.inputs.allFilesMinimumCoverage > 100) {
       throw new Error('all-files-minimum-coverage must be between 0 and 100')
     }
-    
+
     if (this.inputs.changedFilesMinimumCoverage < 0 || this.inputs.changedFilesMinimumCoverage > 100) {
       throw new Error('changed-files-minimum-coverage must be between 0 and 100')
     }
@@ -158,12 +158,12 @@ export class PrTestCoverageAction {
 
   private async uploadArtifact(): Promise<void> {
     try {
-      const files = [this.inputs.coverageXmlDir]
-      
+      const files = [this.inputs.coverageFile]
+
       // Make artifact name unique to avoid conflicts
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
       const uniqueArtifactName = `${this.inputs.artifactName}-${timestamp}`
-      
+
       const { id, size } = await artifact.uploadArtifact(
         uniqueArtifactName,
         files,
@@ -172,7 +172,7 @@ export class PrTestCoverageAction {
           retentionDays: PrTestCoverageAction.DEFAULT_ARTIFACT_RETENTION_DAYS
         }
       )
-      
+
       core.info(`Successfully uploaded artifact: ${uniqueArtifactName} (ID: ${id}, Size: ${size} bytes)`)
     } catch (error) {
       core.warning(`Failed to upload artifact: ${error}`)

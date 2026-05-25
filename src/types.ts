@@ -1,5 +1,5 @@
 export interface ActionInputs {
-  coverageXmlDir: string
+  coverageFile: string
   githubToken: string
   workingDirectory: string
   allFilesMinimumCoverage: number

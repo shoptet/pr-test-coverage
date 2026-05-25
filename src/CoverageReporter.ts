@@ -113,19 +113,13 @@ export class CoverageReporter {
     const allFilesStatus = this.getCoverageStatus(report.allFiles.linesCoverage, true)
     const changedFilesStatus = this.getCoverageStatus(report.changedFiles.linesCoverage, false)
 
-    let markdown = `## Coverage Report ${allFilesStatus}\n\n`
+    let markdown = `## PR Changed Files Coverage Report ${allFilesStatus}\n\n`
     
-    // All Files Summary
-    markdown += `### All Files\n`
-    markdown += `- Lines: ${report.allFiles.linesHit}/${report.allFiles.linesTotal} (${report.allFiles.linesCoverage.toFixed(1)}%) ${allFilesStatus}\n`
-    markdown += `- Functions: ${report.allFiles.functionsHit}/${report.allFiles.functionsTotal} (${report.allFiles.functionsCoverage.toFixed(1)}%)\n`
-    markdown += `- Branches: ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(1)}%)\n\n`
-
     // Changed Files Summary
     markdown += `### Changed Files\n`
     markdown += `- Lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) ${changedFilesStatus}\n`
-    markdown += `- Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
-    markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
+    markdown += `- Methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
+    //markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
 
     // File Details Table with nested directory structure
     if (report.fileDetails.length > 0) {
@@ -158,7 +152,12 @@ export class CoverageReporter {
       const markdownGenerator = new MarkdownTableGenerator()
       const nestedTable = markdownGenerator.generateTable(directoryTree)
       
-      markdown += nestedTable
+      markdown +=
+        '\n<details><summary>Changed files coverage info</summary>\n' +
+        '<p>\n' +
+        nestedTable + '\n' +
+        '</p>\n' +
+        '</details> ';
     }
 
     return markdown

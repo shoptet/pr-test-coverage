@@ -20,8 +20,8 @@ export class MarkdownTableGenerator {
 
   private generateTableRows(node: DirectoryNode, depth: number, rows: string[]): void {
     const indentation = this.getIndentation(depth)
-    const icon = node.isDirectory ? '📁' : '📄'
-    const name = `${indentation}${icon} ${node.name}`
+    // const icon = node.isDirectory ? '📁' : '📄'
+    const name = `${indentation} ${node.name}`
     
     if (node.isDirectory) {
       // Format directory row with bold formatting

@@ -151,8 +151,8 @@ export class CoverageReporter {
       
       markdown +=
         '\n<details><summary>Changed files coverage info</summary>\n' +
-        '<p>\n' +
-        nestedTable + '\n' +
+        '<p>\n\n' +
+        nestedTable + '\n\n' +
         '</p>\n' +
         '</details> ';
     }

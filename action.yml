@@ -33,6 +33,9 @@ inputs:
     description: 'Whether to update existing comment or create new one'
     required: false
     default: 'true'
+  report-title:
+    required: false
+    description: 'PR coverage report comment title (optional)'
 
 outputs:
   all-files-coverage:

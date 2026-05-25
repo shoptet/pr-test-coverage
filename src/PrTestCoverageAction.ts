@@ -77,7 +77,10 @@ export class PrTestCoverageAction {
 
     // Post or update PR comment
     core.info('Posting coverage report to PR...')
-    const commentBody = this.coverageReporter.generateMarkdownReport(report)
+    const commentBody = this.coverageReporter.generateMarkdownReport(
+      report,
+      this.inputs.reportTitle
+    )
     await this.githubService.postOrUpdateComment(commentBody, this.inputs.updateComment)
 
     // Upload artifact if requested

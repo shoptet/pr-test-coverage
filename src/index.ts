@@ -11,7 +11,8 @@ async function run(): Promise<void> {
       allFilesMinimumCoverage: parseInt(core.getInput('all-files-minimum-coverage') || '0', 10),
       changedFilesMinimumCoverage: parseInt(core.getInput('changed-files-minimum-coverage') || '0', 10),
       artifactName: core.getInput('artifact-name'),
-      updateComment: core.getInput('update-comment').toLowerCase() === 'true'
+      updateComment: core.getInput('update-comment').toLowerCase() === 'true',
+      reportTitle: core.getInput('report-title') || 'PR Test Coverage Report'
     }
 
     const action = new PrTestCoverageAction(inputs, github.context)

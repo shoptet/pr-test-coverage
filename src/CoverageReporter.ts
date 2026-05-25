@@ -109,8 +109,8 @@ export class CoverageReporter {
     }
   }
 
-  generateMarkdownReport(report: CoverageReport): string {
-    let markdown = `## PR Changed Files Coverage Report\n\n`
+  generateMarkdownReport(report: CoverageReport, title: string): string {
+    let markdown = `### ${title}\n\n`
     
     // Changed Files Summary
     markdown += `### Changed Files\n`

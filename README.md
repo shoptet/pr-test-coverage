@@ -1,12 +1,12 @@
 # PR Test Coverage
 
-A Github Action to report the test coverage of changed files in a pull request. It uses PHPUnit XML coverage format. It provides a summary of the coverage for all files and changed files separately, and a detailed table with coverage metrics per changed file.
+A Github Action to report the test coverage of changed files in a pull request. It uses Clover XML coverage format (single file). It provides a summary of the coverage for all files and changed files separately, and a detailed table with coverage metrics per changed file.
 
 <img width="924" height="761" alt="image" src="https://github.com/user-attachments/assets/d0e61fa6-46c6-40b1-b9ce-b3c71a10321b" />
 
 ## Features
 
-- 📊 Generates comprehensive coverage reports from PHPUnit XML coverage format
+- 📊 Generates comprehensive coverage reports from Clover XML coverage format
 - 💬 Posts coverage summaries as PR comments
 - 🔄 Updates existing comments or creates new ones
 - 📈 Shows coverage for all files and changed files separately
@@ -37,13 +37,13 @@ jobs:
       
       - name: Run tests and generate coverage
         run: |
-          # Your test commands here that generate PHPUnit XML coverage report
-          vendor/bin/phpunit --coverage-xml coverage-xml
+          # Your test commands here that generate Clover XML coverage report
+          vendor/bin/phpunit --coverage-clover clover.xml
 
       - name: PR Test Coverage
         uses: jbaczuk/pr-test-coverage@v1
         with:
-          coverage-xml-dir: coverage-xml
+          coverage-file: clover.xml
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -53,24 +53,24 @@ jobs:
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    # Required: Path to PHPUnit XML coverage directory
-    coverage-xml-dir: coverage-xml
+    # Required: Path to Clover XML coverage file
+    coverage-file: clover.xml
 
     # Required: GitHub token for API access
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    
+
     # Optional: Working directory (default: repository root)
     working-directory: ./my-app
-    
+
     # Optional: Minimum coverage for all files (default: 0)
     all-files-minimum-coverage: 80
-    
+
     # Optional: Minimum coverage for changed files (default: 0)
     changed-files-minimum-coverage: 90
-    
+
     # Optional: Upload coverage as artifact (default: empty/disabled)
     artifact-name: coverage-report
-    
+
     # Optional: Update existing comment vs create new (default: true)
     update-comment: true
 ```
@@ -79,7 +79,7 @@ jobs:
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `coverage-xml-dir` | Path to the PHPUnit XML coverage directory (e.g., `coverage-xml`) | ✅ | - |
+| `coverage-file` | Path to the Clover XML coverage file (e.g., `clover.xml` or `coverage/clover.xml`) | ✅ | - |
 | `github-token` | GitHub token for API access and posting comments | ✅ | `${{ github.token }}` |
 | `working-directory` | Working directory to run the action from | ❌ | `''` (repository root) |
 | `all-files-minimum-coverage` | Minimum coverage percentage for all files (0-100) | ❌ | `0` |
@@ -107,7 +107,7 @@ The action provides the following outputs that can be used in subsequent workflo
   id: coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    coverage-xml-dir: coverage-xml
+    coverage-file: clover.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
 - name: Check coverage threshold
@@ -174,19 +174,19 @@ The action uses visual indicators to quickly show coverage status:
 
 The action will fail if:
 
-1. **Coverage XML directory not found** - The specified PHPUnit XML coverage directory doesn't exist
+1. **Coverage file not found** - The specified Clover XML coverage file doesn't exist
 2. **Not a pull request** - The action is not running in a PR context
 3. **Coverage below threshold** - When coverage falls below specified minimums:
    - All files coverage below `all-files-minimum-coverage`
    - Changed files coverage below `changed-files-minimum-coverage`
 
-## Supported PHPUnit XML Format
+## Supported Coverage Format
 
-The action supports PHPUnit XML coverage format (generated with `--coverage-xml`) with the following metrics:
+The action supports Clover XML coverage format (generated with `--coverage-clover`) with the following metrics:
 
-- **Lines**: `executable` (total lines) and `executed` (lines hit)
-- **Methods**: `count` (total methods) and `tested` (methods hit)
-- **Functions**: `count` (total functions) and `tested` (functions hit)
+- **Lines**: `statements` (total lines) and `coveredstatements` (lines hit)
+- **Methods**: `methods` (total methods) and `coveredmethods` (methods hit)
+- **Branches**: `conditionals` (total branches) and `coveredconditionals` (branches hit)
 
 ## Common Integration Examples
 
@@ -202,11 +202,9 @@ The action supports PHPUnit XML coverage format (generated with `--coverage-xml`
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    coverage-xml-dir: coverage/clover.xml
+    coverage-file: coverage/clover.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
-
-Note: Jest generates Clover format, not PHPUnit XML. This action now primarily supports PHPUnit XML format. For Jest, you may need to convert the format or use a different action.
 
 ### Python with pytest-cov
 
@@ -221,23 +219,23 @@ Note: Jest generates Clover format, not PHPUnit XML. This action now primarily s
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    coverage-xml-dir: coverage.xml
+    coverage-file: coverage.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Note: pytest-cov generates Cobertura XML format, not PHPUnit XML. This action now primarily supports PHPUnit XML format.
+Note: pytest-cov generates Cobertura XML format by default. For Clover format, you may need additional conversion or use `--cov-report=xml:clover.xml`.
 
 ### PHP with PHPUnit
 
 ```yaml
 - name: Run tests with coverage
   run: |
-    vendor/bin/phpunit --coverage-xml coverage-xml
+    vendor/bin/phpunit --coverage-clover clover.xml
 
 - name: PR Test Coverage
   uses: jbaczuk/pr-test-coverage@v1
   with:
-    coverage-xml-dir: coverage-xml
+    coverage-file: clover.xml
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 

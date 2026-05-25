@@ -110,14 +110,11 @@ export class CoverageReporter {
   }
 
   generateMarkdownReport(report: CoverageReport): string {
-    const allFilesStatus = this.getCoverageStatus(report.allFiles.linesCoverage, true)
-    const changedFilesStatus = this.getCoverageStatus(report.changedFiles.linesCoverage, false)
-
-    let markdown = `## PR Changed Files Coverage Report ${allFilesStatus}\n\n`
+    let markdown = `## PR Changed Files Coverage Report\n\n`
     
     // Changed Files Summary
     markdown += `### Changed Files\n`
-    markdown += `- Lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) ${changedFilesStatus}\n`
+    markdown += `- Lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%)\n`
     markdown += `- Methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
     //markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
 
@@ -191,21 +188,4 @@ export class CoverageReporter {
     }
   }
 
-  private getCoverageStatus(percentage: number, isAllFiles: boolean = true): string {
-    const threshold = isAllFiles ? this.allFilesMinimumCoverage : this.changedFilesMinimumCoverage
-    
-    // If no threshold is set, use default behavior
-    if (threshold === 0) {
-      return percentage >= 80 ? '✅' : percentage >= 60 ? '⚠️' : '❌'
-    }
-    
-    // Use threshold-based logic
-    if (percentage >= threshold) {
-      return '✅'
-    } else if (percentage >= threshold - 10) {
-      return '⚠️'
-    } else {
-      return '❌'
-    }
-  }
 }

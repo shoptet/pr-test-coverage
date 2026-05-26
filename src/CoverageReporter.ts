@@ -122,7 +122,7 @@ export class CoverageReporter {
     let markdown = `### ${title}\n\n`
 
     // Changed Files Summary
-    markdown += `All changed files lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) `
+    markdown += `All changed files coverage: lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) `
     markdown += `, methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
     //markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
 
@@ -159,6 +159,8 @@ export class CoverageReporter {
         '\n<details><summary>Show a code coverage summary of affected files.</summary>\n' +
         '<p>\n\n' +
         table +
+        '\n\n' +
+        'This report was experimentally created by [shoptet/pr-test-coverage](https://github.com/shoptet/pr-test-coverage) action' +
         '\n\n' +
         '</p>\n' +
         '</details> '

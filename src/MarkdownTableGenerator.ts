@@ -1,7 +1,7 @@
 import { DirectoryNode } from './DirectoryStructure'
 
 export class MarkdownTableGenerator {
-  generateTable(directoryTree: DirectoryNode | null): string {
+  public generateTable(directoryTree: DirectoryNode | null): string {
     if (!directoryTree) {
       return ''
     }

@@ -113,15 +113,12 @@ export class CoverageReporter {
     let markdown = `### ${title}\n\n`
     
     // Changed Files Summary
-    markdown += `### Changed Files\n`
-    markdown += `- Lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%)\n`
-    markdown += `- Methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
+    markdown += `All changed files lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) `
+    markdown += `, methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
     //markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
 
     // File Details Table with nested directory structure
     if (report.fileDetails.length > 0) {
-      markdown += `Files changed:\n\n`
-      
       // Convert fileDetails to FileDetail format for DirectoryStructure
       const fileDetails: FileDetail[] = report.fileDetails.map(file => ({
         file: file.file,

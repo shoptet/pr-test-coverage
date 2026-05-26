@@ -1,19 +1,20 @@
 # PR Test Coverage
 
+> [!IMPORTANT]
+> 🧪 This is an experimental fork of the original [pr-test-coverage](https://github.com/JBaczuk/pr-test-coverage)
+> action which supported only Icov format.
+
 A Github Action to report the test coverage of changed files in a pull request. It uses PHPUnit XML coverage format. It provides a summary of the coverage for all files and changed files separately, and a detailed table with coverage metrics per changed file.
 
-<img width="924" height="761" alt="image" src="https://github.com/user-attachments/assets/d0e61fa6-46c6-40b1-b9ce-b3c71a10321b" />
+<img width="681" height="412" alt="Image" src="https://github.com/user-attachments/assets/79e5ff52-f640-4f4f-bbd3-20ebdc5bdcd6" />
 
 ## Features
 
 - 📊 Generates comprehensive coverage reports from PHPUnit XML coverage format
 - 💬 Posts coverage summaries as PR comments
 - 🔄 Updates existing comments or creates new ones
-- 📈 Shows coverage for all files and changed files separately
+- 📈 Shows coverage for changed files
 - 📋 Detailed table with coverage metrics per changed file
-- ⚠️ Configurable coverage thresholds with action failure
-- 📦 Optional artifact upload for coverage reports
-- 🎯 Supports custom working directories
 
 ## Usage
 

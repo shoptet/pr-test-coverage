@@ -147,12 +147,12 @@ export class CoverageReporter {
       const directoryTree = directoryStructure.buildDirectoryTree(fileDetails)
       
       const markdownGenerator = new MarkdownTableGenerator()
-      const nestedTable = markdownGenerator.generateTable(directoryTree)
+      const table = markdownGenerator.generateTable(directoryTree)
       
       markdown +=
-        '\n<details><summary>Changed files coverage info</summary>\n' +
+        '\n<details><summary>Show a code coverage summary of affected files.</summary>\n' +
         '<p>\n\n' +
-        nestedTable + '\n\n' +
+        table + '\n\n' +
         '</p>\n' +
         '</details> ';
     }

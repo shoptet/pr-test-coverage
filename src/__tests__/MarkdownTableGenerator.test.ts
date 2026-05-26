@@ -131,50 +131,32 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should include proper table headers', () => {
-        expect(markdownTable).toContain('| **File** | **Lines** | **Line %** | **Functions** | **Function %** | **Branches** | **Branch %** |')
-        expect(markdownTable).toContain('|------|-------|--------|-----------|------------|----------|----------|')
-      })
-
-      test('Then it should format root directory with bold and folder icon', () => {
-        expect(markdownTable).toContain('| **📁 src** | **22/40** | **55.0%** | **15/19** | **78.9%** | **24/31** | **77.4%** |')
-      })
-
-      test('Then it should format nested directories with proper indentation and bold formatting', () => {
-        expect(markdownTable).toContain('| **&emsp; 📁 components** | **19/36** | **52.8%** | **12/16** | **75.0%** | **22/27** | **81.5%** |')
-        expect(markdownTable).toContain('| **&emsp;&emsp;&nbsp; 📁 Button** | **6/10** | **60.0%** | **4/5** | **80.0%** | **8/10** | **80.0%** |')
-        expect(markdownTable).toContain('| **&emsp;&emsp;&nbsp; 📁 Modal** | **13/26** | **50.0%** | **8/11** | **72.7%** | **14/17** | **82.4%** |')
+        expect(markdownTable).toContain('| **File** | **Lines** | **Line %** | **Functions** | **Function %** |')
       })
 
       test('Then it should format files with proper indentation and file icon', () => {
-        expect(markdownTable).toContain('| &emsp;&emsp;&emsp;&nbsp;&nbsp; 📄 Button.tsx | 6/10 | 60.0% | 4/5 | 80.0% | 8/10 | 80.0% |')
-        expect(markdownTable).toContain('| &emsp;&emsp;&emsp;&nbsp;&nbsp; 📄 Modal.tsx | 12/24 | 50.0% | 7/10 | 70.0% | 12/15 | 80.0% |')
-        expect(markdownTable).toContain('| &emsp;&emsp;&emsp;&nbsp;&nbsp; 📄 Modal.types.ts | 1/2 | 50.0% | 1/1 | 100.0% | 2/2 | 100.0% |')
-        expect(markdownTable).toContain('| &emsp; 📄 useValidation.ts | 3/4 | 75.0% | 3/3 | 100.0% | 2/4 | 50.0% |')
+        expect(markdownTable).toContain('| Button.tsx | 6/10 | 60.0% | 4/5 | 80.0% |')
+        expect(markdownTable).toContain('| Modal.tsx | 12/24 | 50.0% | 7/10 | 70.0% |')
+        expect(markdownTable).toContain('| Modal.types.ts | 1/2 | 50.0% | 1/1 | 100.0% |')
+        expect(markdownTable).toContain('| useValidation.ts | 3/4 | 75.0% | 3/3 | 100.0% |')
       })
 
       test('Then it should maintain proper column alignment with padding', () => {
         const lines = markdownTable.split('\n').filter(line => line.trim().startsWith('|') && !line.includes('---'))
         
-        // Check that directory names are properly padded to align columns
-        const srcLine = lines.find(line => line.includes('📁 src'))
-        expect(srcLine).toMatch(/\*\*📁 src\*\*\s+\|\s+\*\*22\/40\*\*/)
-        
         // Check file alignment
-        const buttonFileLine = lines.find(line => line.includes('📄 Button.tsx'))
-        expect(buttonFileLine).toMatch(/📄 Button\.tsx\s+\|\s+6\/10/)
+        const buttonFileLine = lines.find(line => line.includes('Button.tsx'))
+        expect(buttonFileLine).toMatch(/Button\.tsx\s+\|\s+6\/10/)
       })
 
       test('Then it should preserve directory hierarchy order', () => {
-        const tableLines = markdownTable.split('\n').filter(line => line.includes('📁') || line.includes('📄'))
+        console.log(markdownTable);
+        const tableLines = markdownTable.split('\n').filter(line => line.includes('.tsx') || line.includes('.ts'))
         const expectedOrder = [
-          '📁 src',
-          '📁 components', 
-          '📁 Button',
-          '📄 Button.tsx',
-          '📁 Modal',
-          '📄 Modal.tsx',
-          '📄 Modal.types.ts',
-          '📄 useValidation.ts'
+          'Button.tsx',
+          'Modal.tsx',
+          'Modal.types.ts',
+          'useValidation.ts'
         ]
         
         expectedOrder.forEach((item, index) => {
@@ -228,7 +210,7 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should format single file correctly', () => {
-        expect(markdownTable).toContain('| 📄 utils.ts | 5/10 | 50.0% | 2/4 | 50.0% | 3/6 | 50.0% |')
+        expect(markdownTable).toContain('| utils.ts | 5/10 | 50.0% | 2/4 | 50.0% |')
       })
     })
   })

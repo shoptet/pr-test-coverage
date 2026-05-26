@@ -8,12 +8,12 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format:check": "prettier --check src/**/*.ts",
+    "format:fix": "prettier --write src/**/*.ts"
   },
   "keywords": [
     "github-action",
     "test-coverage",
-    "clover",
     "pull-request"
   ],
   "author": "Jordan Baczuk",

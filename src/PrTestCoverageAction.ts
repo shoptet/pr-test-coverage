@@ -1,11 +1,10 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
 import artifact from '@actions/artifact'
 import { Context } from '@actions/github/lib/context'
 import { PhpUnitXmlParser } from './PhpUnitXmlParser'
 import { CoverageReporter } from './CoverageReporter'
 import { GitHubService } from './GitHubService'
-import { CoverageData, ActionInputs, CoverageReport } from './types'
+import { ActionInputs, CoverageReport } from './types'
 import * as fs from 'fs'
 import * as path from 'path'
 

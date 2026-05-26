@@ -46,6 +46,7 @@ export class PhpUnitXmlParser {
       }
 
       // Helper function to process file elements recursively
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
       const processDirectory = (dir: any) => {
         // Process files in this directory
         const files = dir.file || []
@@ -61,6 +62,7 @@ export class PhpUnitXmlParser {
       }
 
       // Helper function to process file elements
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
       const processFile = (file: any) => {
         const href = file.$.href
         const fileName = file.$.name
@@ -112,16 +114,16 @@ export class PhpUnitXmlParser {
           file: filePath,
           lines: {
             found: linesTotal,
-            hit: linesHit
+            hit: linesHit,
           },
           functions: {
             found: combinedFunctionsTotal,
-            hit: combinedFunctionsHit
+            hit: combinedFunctionsHit,
           },
           branches: {
             found: branchesTotal,
-            hit: branchesHit
-          }
+            hit: branchesHit,
+          },
         }
 
         coverageData[filePath] = fileCoverage
@@ -135,7 +137,7 @@ export class PhpUnitXmlParser {
 
       return coverageData
     } catch (error) {
-      throw new Error(`Failed to parse PHPUnit XML: ${error}`)
+      throw new Error(`Failed to parse PHPUnit XML: ${error}`, { cause: error })
     }
   }
 
@@ -165,7 +167,7 @@ export class PhpUnitXmlParser {
 
       // No path attribute found, combine prefix with filename
       return pathPrefix ? path.join(pathPrefix, fileName) : fileName
-    } catch (error) {
+    } catch {
       // On error, return filename with prefix
       return pathPrefix ? path.join(pathPrefix, fileName) : fileName
     }

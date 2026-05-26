@@ -57,7 +57,7 @@ export class GitHubService {
       }))
     } catch (error) {
       core.error(`Failed to get changed files: ${error}`)
-      throw new Error(`Failed to get changed files: ${error}`)
+      throw new Error(`Failed to get changed files: ${error}`, {cause: error})
     }
   }
 
@@ -95,7 +95,7 @@ export class GitHubService {
       core.info('Created new comment')
     } catch (error) {
       core.error(`Failed to post/update comment: ${error}`)
-      throw new Error(`Failed to post/update comment: ${error}`)
+      throw new Error(`Failed to post/update comment: ${error}`, {cause: error})
     }
   }
 

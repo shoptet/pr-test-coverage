@@ -118,7 +118,7 @@ export class CoverageReporter {
     }
   }
 
-  generateMarkdownReport(report: CoverageReport, title: string): string {
+  generateMarkdownReport(report: CoverageReport, title: string, prFilesUrl?: string): string {
     let markdown = `### ${title}\n\n`
 
     markdown += `All changed files coverage: lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%)\n`
@@ -150,7 +150,7 @@ export class CoverageReporter {
       const directoryTree = directoryStructure.buildDirectoryTree(fileDetails)
 
       const markdownGenerator = new MarkdownTableGenerator()
-      const table = markdownGenerator.generateTable(directoryTree)
+      const table = markdownGenerator.generateTable(directoryTree, prFilesUrl)
 
       markdown +=
         '\n<details><summary>Show a code coverage summary of affected files.</summary>\n' +

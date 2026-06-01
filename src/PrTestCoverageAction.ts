@@ -76,9 +76,14 @@ export class PrTestCoverageAction {
 
     // Post or update PR comment
     core.info('Posting coverage report to PR...')
+    const { owner, repo } = this.context.repo
+    const prNumber = this.context.payload.pull_request.number
+    const serverUrl = process.env.GITHUB_SERVER_URL ?? 'https://github.com'
+    const prFilesUrl = `${serverUrl}/${owner}/${repo}/pull/${prNumber}/files`
     const commentBody = this.coverageReporter.generateMarkdownReport(
       report,
-      this.inputs.reportTitle
+      this.inputs.reportTitle,
+      prFilesUrl
     )
     await this.githubService.postOrUpdateComment(commentBody, this.inputs.updateComment)
 

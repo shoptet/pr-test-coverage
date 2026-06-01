@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest'
+import { createHash } from 'crypto'
 import { MarkdownTableGenerator } from '../MarkdownTableGenerator'
 import { DirectoryNode } from '../DirectoryStructure'
 
@@ -164,6 +165,23 @@ describe('MarkdownTableGenerator', () => {
         expectedOrder.forEach((item, index) => {
           expect(tableLines[index]).toContain(item)
         })
+      })
+    })
+
+    describe('When generating markdown table with a PR files URL', () => {
+      const prFilesUrl = 'https://github.com/acme/repo/pull/42/files'
+      let markdownTable: string
+
+      beforeEach(() => {
+        markdownTable = markdownGenerator.generateTable(directoryTree, prFilesUrl)
+      })
+
+      test('Then file names link to the PR diff anchored by sha256 of the path', () => {
+        const filePath = 'src/components/Button/Button.tsx'
+        const anchor = createHash('sha256').update(filePath).digest('hex')
+        expect(markdownTable).toContain(
+          `| [${filePath}](${prFilesUrl}#diff-${anchor}) | 6/10 | 60.0% |`
+        )
       })
     })
   })

@@ -132,14 +132,14 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should include proper table headers', () => {
-        expect(markdownTable).toContain('| **File** | **Lines** | **Line %** |')
+        expect(markdownTable).toContain('| **File** | **Coverage % (lines)** |')
       })
 
       test('Then it should format files with proper indentation and file icon', () => {
-        expect(markdownTable).toContain('| src/components/Button/Button.tsx | 6/10 | 60.0% |')
-        expect(markdownTable).toContain('| src/components/Modal/Modal.tsx | 12/24 | 50.0% |')
-        expect(markdownTable).toContain('| src/components/Modal/Modal.types.ts | 1/2 | 50.0% |')
-        expect(markdownTable).toContain('| src/useValidation.ts | 3/4 | 75.0% |')
+        expect(markdownTable).toContain('| src/components/Button/Button.tsx | 60.0% (6/10) |')
+        expect(markdownTable).toContain('| src/components/Modal/Modal.tsx | 50.0% (12/24) |')
+        expect(markdownTable).toContain('| src/components/Modal/Modal.types.ts | 50.0% (1/2) |')
+        expect(markdownTable).toContain('| src/useValidation.ts | 75.0% (3/4) |')
       })
 
       test('Then it should maintain proper column alignment with padding', () => {
@@ -148,7 +148,7 @@ describe('MarkdownTableGenerator', () => {
           .filter((line) => line.trim().startsWith('|') && !line.includes('---'))
 
         const buttonFileLine = lines.find((line) => line.includes('Button.tsx'))
-        expect(buttonFileLine).toMatch(/Button\.tsx\s+\|\s+6\/10/)
+        expect(buttonFileLine).toMatch(/Button\.tsx\s+\|\s+60\.0%\s+\(6\/10\)/)
       })
 
       test('Then it should preserve directory hierarchy order', () => {
@@ -180,7 +180,7 @@ describe('MarkdownTableGenerator', () => {
         const filePath = 'src/components/Button/Button.tsx'
         const anchor = createHash('sha256').update(filePath).digest('hex')
         expect(markdownTable).toContain(
-          `| [${filePath}](${prFilesUrl}#diff-${anchor}) | 6/10 | 60.0% |`
+          `| [${filePath}](${prFilesUrl}#diff-${anchor}) | 60.0% (6/10) |`
         )
       })
     })
@@ -230,7 +230,7 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should format single file correctly', () => {
-        expect(markdownTable).toContain('| utils.ts | 5/10 | 50.0% |')
+        expect(markdownTable).toContain('| utils.ts | 50.0% (5/10) |')
       })
     })
   })

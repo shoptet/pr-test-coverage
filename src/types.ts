@@ -44,6 +44,7 @@ export interface CoverageSummary {
 export interface CoverageReport {
   allFiles: CoverageSummary
   changedFiles: CoverageSummary
+  changedFilesCount: number
   fileDetails: Array<{
     file: string
     lines: {

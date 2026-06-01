@@ -131,16 +131,14 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should include proper table headers', () => {
-        expect(markdownTable).toContain(
-          '| **File** | **Lines** | **Line %** | **Functions** | **Function %** |'
-        )
+        expect(markdownTable).toContain('| **File** | **Lines** | **Line %** |')
       })
 
       test('Then it should format files with proper indentation and file icon', () => {
-        expect(markdownTable).toContain('| Button.tsx | 6/10 | 60.0% | 4/5 | 80.0% |')
-        expect(markdownTable).toContain('| Modal.tsx | 12/24 | 50.0% | 7/10 | 70.0% |')
-        expect(markdownTable).toContain('| Modal.types.ts | 1/2 | 50.0% | 1/1 | 100.0% |')
-        expect(markdownTable).toContain('| useValidation.ts | 3/4 | 75.0% | 3/3 | 100.0% |')
+        expect(markdownTable).toContain('| src/components/Button/Button.tsx | 6/10 | 60.0% |')
+        expect(markdownTable).toContain('| src/components/Modal/Modal.tsx | 12/24 | 50.0% |')
+        expect(markdownTable).toContain('| src/components/Modal/Modal.types.ts | 1/2 | 50.0% |')
+        expect(markdownTable).toContain('| src/useValidation.ts | 3/4 | 75.0% |')
       })
 
       test('Then it should maintain proper column alignment with padding', () => {
@@ -148,17 +146,20 @@ describe('MarkdownTableGenerator', () => {
           .split('\n')
           .filter((line) => line.trim().startsWith('|') && !line.includes('---'))
 
-        // Check file alignment
         const buttonFileLine = lines.find((line) => line.includes('Button.tsx'))
         expect(buttonFileLine).toMatch(/Button\.tsx\s+\|\s+6\/10/)
       })
 
       test('Then it should preserve directory hierarchy order', () => {
-        console.log(markdownTable)
         const tableLines = markdownTable
           .split('\n')
           .filter((line) => line.includes('.tsx') || line.includes('.ts'))
-        const expectedOrder = ['Button.tsx', 'Modal.tsx', 'Modal.types.ts', 'useValidation.ts']
+        const expectedOrder = [
+          'src/components/Button/Button.tsx',
+          'src/components/Modal/Modal.tsx',
+          'src/components/Modal/Modal.types.ts',
+          'src/useValidation.ts',
+        ]
 
         expectedOrder.forEach((item, index) => {
           expect(tableLines[index]).toContain(item)
@@ -211,7 +212,7 @@ describe('MarkdownTableGenerator', () => {
       })
 
       test('Then it should format single file correctly', () => {
-        expect(markdownTable).toContain('| utils.ts | 5/10 | 50.0% | 2/4 | 50.0% |')
+        expect(markdownTable).toContain('| utils.ts | 5/10 | 50.0% |')
       })
     })
   })

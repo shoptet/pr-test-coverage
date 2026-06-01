@@ -121,10 +121,7 @@ export class CoverageReporter {
   generateMarkdownReport(report: CoverageReport, title: string): string {
     let markdown = `### ${title}\n\n`
 
-    // Changed Files Summary
-    markdown += `All changed files coverage: lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%) `
-    markdown += `, methods and Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(1)}%)\n`
-    //markdown += `- Branches: ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(1)}%)\n\n`
+    markdown += `All changed files coverage: lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%)\n`
 
     // File Details Table with nested directory structure
     if (report.fileDetails.length > 0) {

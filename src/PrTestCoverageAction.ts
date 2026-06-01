@@ -65,11 +65,11 @@ export class PrTestCoverageAction {
 
     // Set action outputs
     core.setOutput('all-files-coverage', report.allFiles.linesCoverage.toFixed(2))
-    core.setOutput('changed-files-coverage', report.changedFiles.linesCoverage.toFixed(2))
+    core.setOutput('changed-files-coverage', report.changedFilesSummary.linesCoverage.toFixed(2))
     core.setOutput('all-files-lines-hit', report.allFiles.linesHit.toString())
     core.setOutput('all-files-lines-total', report.allFiles.linesTotal.toString())
-    core.setOutput('changed-files-lines-hit', report.changedFiles.linesHit.toString())
-    core.setOutput('changed-files-lines-total', report.changedFiles.linesTotal.toString())
+    core.setOutput('changed-files-lines-hit', report.changedFilesSummary.linesHit.toString())
+    core.setOutput('changed-files-lines-total', report.changedFilesSummary.linesTotal.toString())
 
     // Check coverage thresholds
     this.checkCoverageThresholds(report)
@@ -127,7 +127,7 @@ export class PrTestCoverageAction {
 
     // Check changed files coverage threshold
     if (this.inputs.changedFilesMinimumCoverage > 0) {
-      const changedFilesCoverage = report.changedFiles.linesCoverage
+      const changedFilesCoverage = report.changedFilesSummary.linesCoverage
       if (changedFilesCoverage < this.inputs.changedFilesMinimumCoverage) {
         throw new Error(
           `Changed files coverage (${changedFilesCoverage.toFixed(1)}%) is below minimum threshold (${this.inputs.changedFilesMinimumCoverage}%)`
@@ -147,9 +147,9 @@ export class PrTestCoverageAction {
     core.info(`  Branches:  ${report.allFiles.branchesHit}/${report.allFiles.branchesTotal} (${report.allFiles.branchesCoverage.toFixed(2)}%)`)
     core.info('')
     core.info('Changed Files:')
-    core.info(`  Lines:     ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(2)}%)`)
-    core.info(`  Functions: ${report.changedFiles.functionsHit}/${report.changedFiles.functionsTotal} (${report.changedFiles.functionsCoverage.toFixed(2)}%)`)
-    core.info(`  Branches:  ${report.changedFiles.branchesHit}/${report.changedFiles.branchesTotal} (${report.changedFiles.branchesCoverage.toFixed(2)}%)`)
+    core.info(`  Lines:     ${report.changedFilesSummary.linesHit}/${report.changedFilesSummary.linesTotal} (${report.changedFilesSummary.linesCoverage.toFixed(2)}%)`)
+    core.info(`  Functions: ${report.changedFilesSummary.functionsHit}/${report.changedFilesSummary.functionsTotal} (${report.changedFilesSummary.functionsCoverage.toFixed(2)}%)`)
+    core.info(`  Branches:  ${report.changedFilesSummary.branchesHit}/${report.changedFilesSummary.branchesTotal} (${report.changedFilesSummary.branchesCoverage.toFixed(2)}%)`)
 
     if (report.fileDetails.length > 0) {
       core.info('')

@@ -114,6 +114,7 @@ export class CoverageReporter {
     return {
       allFiles,
       changedFiles: changedFilesSummary,
+      changedFilesCount: changedFiles.length,
       fileDetails,
     }
   }
@@ -121,7 +122,7 @@ export class CoverageReporter {
   generateMarkdownReport(report: CoverageReport, title: string, prFilesUrl?: string): string {
     let markdown = `### ${title}\n\n`
 
-    markdown += `All changed files coverage: lines: ${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} (${report.changedFiles.linesCoverage.toFixed(1)}%)\n`
+    markdown += `All ${report.changedFilesCount} changed files coverage ${report.changedFiles.linesCoverage.toFixed(1)}% (${report.changedFiles.linesHit}/${report.changedFiles.linesTotal} lines)\n`
 
     // File Details Table with nested directory structure
     if (report.fileDetails.length > 0) {
@@ -153,7 +154,7 @@ export class CoverageReporter {
       const table = markdownGenerator.generateTable(directoryTree, prFilesUrl)
 
       markdown +=
-        '\n<details><summary>Show a code coverage summary of affected files.</summary>\n' +
+        `\n<details><summary>Show a code coverage summary of ${report.fileDetails.length} affected files.</summary>\n` +
         '<p>\n\n' +
         table +
         '\n\n' +

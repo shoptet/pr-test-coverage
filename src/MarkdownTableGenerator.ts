@@ -9,8 +9,8 @@ export class MarkdownTableGenerator {
 
     const rows: string[] = []
 
-    rows.push('| **File** | **Lines** | **Line %** |')
-    rows.push('|------|-------|--------|')
+    rows.push('| **File** | **Coverage % (lines)** |')
+    rows.push('|------|-------|')
 
     this.generateTableRows(directoryTree, rows, prFilesUrl)
 
@@ -27,10 +27,9 @@ export class MarkdownTableGenerator {
 
     const filePath = node.fileDetail?.file ?? node.name
     const displayName = prFilesUrl ? `[${filePath}](${this.buildFileLink(prFilesUrl, filePath)})` : filePath
-    const linesData = `${node.coverage.lines.hit}/${node.coverage.lines.total}`
-    const linesPercent = `${node.coverage.lines.percentage.toFixed(1)}%`
+    const coverage = `${node.coverage.lines.percentage.toFixed(1)}% (${node.coverage.lines.hit}/${node.coverage.lines.total})`
 
-    rows.push(`| ${displayName} | ${linesData} | ${linesPercent} |`)
+    rows.push(`| ${displayName} | ${coverage} |`)
   }
 
   private buildFileLink(prFilesUrl: string, filePath: string): string {
